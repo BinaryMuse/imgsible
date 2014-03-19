@@ -1,4 +1,5 @@
-function upload(file) {
+// function upload(file) {
+function upload(form) {
   var reader = new FileReader();
   var xhr = new XMLHttpRequest();
 
@@ -14,8 +15,8 @@ function upload(file) {
     console.log('load', e);
   });
 
-  var formData = new FormData();
-  formData.append('files', file);
+  var formData = new FormData(form);
+  // formData.append('files', file);
 
   xhr.open('POST', '/api/upload');
   xhr.responseType = 'text';
@@ -39,13 +40,7 @@ function handleFile(file) {
   reader.readAsDataURL(file);
 }
 
-var file = null;
-
-document.getElementById('file').addEventListener('change', function() {
-  handleFile(this.files[0]);
-  file = this.files[0];
-});
-
-document.getElementById('btn').addEventListener('click', function() {
-  upload(file);
-});
+document.getElementById('upload-image').addEventListener('submit', function(e) {
+  e.preventDefault();
+  upload(this);
+})

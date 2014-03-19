@@ -32,23 +32,17 @@ function getImageDimensions(imagePath) {
   return d.promise;
 }
 
-function getImageBytes(imagePath) {
-  return Q.nfcall(fs.stat, imagePath)
-
-  var d = Q.defer();
-  gm(imagePath)
-    .identify(function(err, value) {
-      if (!value) err = (err || new Error("No value from gm().identify()"));
-      d.makeNodeResolver()(err, value);
-    });
-  return d.promise;
+function getImageStats(imagePath) {
+  return Q.nfcall(fs.stat, imagePath);
 }
 
-function addImageToDatabase(db, id, extension, width, height, size) {
+function addImageToDatabase(db, id, extension, width, height, size, title, description) {
   var d = Q.defer();
-  // TODO: add user votes?-
+  // TODO: add user votes?
   db.multi()
     .hmset('img:' + id, {
+      title: title,
+      description: description,
       type: extension,
       views: 0,
       votesUp: 0,
@@ -63,7 +57,7 @@ function addImageToDatabase(db, id, extension, width, height, size) {
   return d.promise;
 }
 
-function createImage(db, file, uploadDir) {
+function createImage(db, file, uploadDir, title, description) {
   var id, filename, targetPath;
   var extension = FILE_TYPE_MAP[file.type];
 
@@ -74,9 +68,9 @@ function createImage(db, file, uploadDir) {
 
     return Q.nfcall(fs.rename, file.path, targetPath);
   }).then(function() {
-    return [ createThumbnail(targetPath), getImageDimensions(targetPath), getImageBytes(targetPath) ];
-  }).spread(function(_, size, bytes) {
-    return addImageToDatabase(db, id, extension, size.width, size.height, bytes.size);
+    return [ createThumbnail(targetPath), getImageDimensions(targetPath), getImageStats(targetPath) ];
+  }).spread(function(_, size, stat) {
+    return addImageToDatabase(db, id, extension, size.width, size.height, stat.size, title, description);
   }).then(function() {
     return {
       id: id,
@@ -110,7 +104,9 @@ module.exports = function(app, db) {
       } else {
         res.json(200, {
           id: req.params.id,
-          extension: reply.extension,
+          title: reply.title,
+          description: reply.description,
+          extension: reply.type,
           width: parseInt(reply.width, 10),
           height: parseInt(reply.height, 10),
           bytes: parseInt(reply.bytes, 10),
@@ -130,15 +126,18 @@ module.exports = function(app, db) {
     var fileHandled = false;
     var form = new formidable.IncomingForm();
     form.uploadDir = os.tmpdir();
+    form.encoding = 'utf-8';
 
-    form.on('file', function(field, file) {
-      // Only one file, plase
-      if (fileHandled) {
-        fs.unlink(file.path);
-        return;
-      }
-      fileHandled = true;
+    form.on('error', function(e) {
+      console.error('Erorr in api/upload form parsing:');
+      console.error(e);
+      errors.genericError(res);
+    });
 
+    form.parse(req, function(err, fields, files) {
+      if (err) return errors.genericError(res);
+
+      var file = files.upload;
       if (!FILE_TYPE_MAP[file.type]) {
         res.json(415, {
           error: true,
@@ -146,7 +145,8 @@ module.exports = function(app, db) {
           message: 'Invalid file format: ' + file.type
         });
       } else {
-        createImage(db, file, app.get('uploadDir')).then(function(img) {
+        createImage(db, file, app.get('uploadDir'), fields.title, fields.description)
+        .then(function(img) {
           res.header('Location', '/api/image/' + img.id);
           res.json(201, {
             id: img.id,
@@ -160,7 +160,5 @@ module.exports = function(app, db) {
         });
       }
     });
-
-    form.parse(req);
   });
 };
