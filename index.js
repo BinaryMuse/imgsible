@@ -12,6 +12,7 @@ var app = express();
 var server = http.createServer(app);
 var db = redis.createClient(6379, 'localhost', {retry_max_delay: 10 * 1000});
 
+// TODO: figure out why errors in express, etc. are triggering this event on db
 db.on('error', function(e) {});
 
 db.on('end', function() {

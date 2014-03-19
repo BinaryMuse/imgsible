@@ -6,20 +6,14 @@ var formidable = require('formidable');
 var gm = require('gm');
 var Q = require('q');
 
+var errors = require('./errors');
+
 var FILE_TYPE_MAP = {
   'image/jpeg': 'jpg',
   'image/jpg': 'jpg',
   'image/gif': 'gif',
   'image/png': 'png'
 };
-
-function genericError(res) {
-  res.json(500, {
-    error: true,
-    status: 500,
-    message: 'Internal server errror'
-  });
-}
 
 function createThumbnail(imagePath) {
   var d = Q.defer();
@@ -98,7 +92,7 @@ module.exports = function(app, db) {
     if (app.get('dbConnected')) {
       next();
     } else {
-      genericError(res);
+      errors.genericError(res);
     };
   });
 
@@ -129,7 +123,7 @@ module.exports = function(app, db) {
     }, function(reason) {
       console.error('Error in api/image');
       console.error(reason);
-      genericError(res);
+      errors.genericError(res);
     });
   });
 
@@ -163,7 +157,7 @@ module.exports = function(app, db) {
         }, function(reason) {
           console.error('Error in api/upload:');
           console.error(reason);
-          genericError(res);
+          errors.genericError(res);
         });
       }
     });

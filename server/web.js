@@ -2,6 +2,8 @@ var fs = require('fs');
 
 var Q = require('q');
 
+var errors = require('./errors');
+
 var mimeTypes = {
   jpg: 'image/jpeg',
   gif: 'image/gif',
@@ -10,14 +12,14 @@ var mimeTypes = {
 
 module.exports = function(app, db) {
   app.get('/', function(req, res) {
-    res.sendfile(app.get('root') + '/public/index.html');
+    res.sendfile('public/index.html');
   });
 
   app.get(/^\/i\/(\w+)(-t)?.(jpg|jpeg|gif|png)/, function(req, res) {
     // TODO: unify errors
     Q.nfcall(db.hgetall.bind(db), 'img:' + req.params[0]).then(function(reply) {
       if (!reply) {
-        res.send(404);
+        errors.notFound(res);
       } else {
         var fname = req.params[1] ? req.params[0] + '_thumb' : req.params[0];
         res.header('Content-Type', mimeTypes[reply.type]);
@@ -26,7 +28,7 @@ module.exports = function(app, db) {
     }, function(reason) {
       console.error('Error in web/i');
       console.error(reason);
-      res.send(500);
+      errors.genericError(res);
     });
   });
 };
