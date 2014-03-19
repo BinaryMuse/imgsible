@@ -1,7 +1,6 @@
 var fs = require('fs');
 var os = require('os');
 
-var async = require('async');
 var formidable = require('formidable');
 var gm = require('gm');
 var Q = require('q');
