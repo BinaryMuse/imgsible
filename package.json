@@ -1,0 +1,26 @@
+{
+  "name": "imgeer",
+  "version": "0.0.0",
+  "description": "Sample React app in the spirit of Imgur",
+  "main": "index.js",
+  "author": "Brandon Tilley <brandon@brandontilley.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "nf start -w"
+  },
+  "dependencies": {
+    "express": "^3.4.8",
+    "formidable": "^1.0.14",
+    "redis": "^0.10.1",
+    "hiredis": "^0.1.16",
+    "async": "^0.2.10",
+    "gm": "^1.14.2",
+    "q": "^1.0.1"
+  },
+  "devDependencies": {
+    "foreman": "0.0.26",
+    "reactify": "^0.10.0",
+    "watchify": "^0.6.2"
+  },
+  "private": true
+}
