@@ -26,6 +26,8 @@ db.on('connect', function() {
 app.set('root', __dirname);
 app.set('uploadDir', __dirname + '/images-upload');
 
+app.use(express.logger());
+app.use(express.compress());
 app.use(express.static(app.get('root') + '/public'));
 
 [api, web].forEach(function(extension) {
