@@ -3,14 +3,12 @@ var fs = require('fs');
 var Q = require('q');
 var React = require('react');
 
-var AppDispatcher = require('../public/js/dispatchers/app_dispatcher.js');
+var Application = require('../public/js/application.js');
 var ApplicationView = require('../public/js/components/application_view.jsx');
 var errors = require('./errors');
-var ImageStore = require('../public/js/stores/image_store.js');
-var UrlStore = require('../public/js/stores/url_store.js');
+var UrlActions = require('../public/js/actions/url_actions.js');
 
-AppDispatcher.register(ImageStore);
-AppDispatcher.register(UrlStore);
+Application();
 
 // TODO: break stores into client and server strategies,
 // pass in DB, etc. in order to initialize data
@@ -24,12 +22,11 @@ var mimeTypes = {
 
 module.exports = function(app, db) {
   app.get('/', function(req, res) {
-    var initialState = {
-      route: { page: 'list' },
-      imagesById: {}
-    };
-    var html =  React.renderComponentToString(ApplicationView({preloadData: initialState}));
-    res.render('index', {app: html, preloadData: initialState});
+    var promise = UrlActions.setUrlFromRequest(req.url);
+    promise.then(function(state) {
+      var html =  React.renderComponentToString(ApplicationView({preloadData: state}));
+      res.render('index', {app: html, preloadData: state});
+    });
   });
 
   app.get('/image/:img', function(req, res) {

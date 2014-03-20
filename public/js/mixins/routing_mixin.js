@@ -1,12 +1,29 @@
 var UrlActions = require('../actions/url_actions.js');
 
 var RoutingMixin = {
+  // TODO: figure out why this dies on the server when the preloadData
+  // includes a `route` key.
+  //
+  // getInitialState: function() {
+  //   return { route: {} };
+  // },
+
   componentDidMount: function() {
+    var firstPopState = true;
     this.getDOMNode().addEventListener('click', this._handleRouteClick);
+    window.onpopstate = function(e) {
+      if (firstPopState) {
+        firstPopState = false;
+        return;
+      }
+      var path = document.location.toString().replace(document.location.origin, '');
+      UrlActions.changeUrl(path, true);
+    }
   },
 
   componentWillUnmount: function() {
     this.getDOMNode().removeEventListener('click', this._handleRouteClick);
+    window.onpopstate = null;
   },
 
   _handleRouteClick: function(e) {

@@ -6,7 +6,7 @@
   "author": "Brandon Tilley <brandon@brandontilley.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nf start -w"
+    "start": "nf start"
   },
   "dependencies": {
     "express": "^3.4.8",
@@ -20,7 +20,8 @@
     "node-jsx": "^0.9.0",
     "envify": "^1.2.1",
     "react": "^0.9.0",
-    "object-merge": "^2.5.1"
+    "object-merge": "^2.5.1",
+    "route-recognizer": "^0.1.0"
   },
   "devDependencies": {
     "foreman": "0.0.26",

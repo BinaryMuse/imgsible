@@ -17,6 +17,8 @@ ImageStore.prototype.getState = function() {
 ImageStore.prototype.handleDispatch = function(type, action) {
   if (type === ImageActions.LOAD_IMAGE) {
     return this.fetchImageData(action.id);
+  } else {
+    return this.getState();
   }
 };
 
