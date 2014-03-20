@@ -14,13 +14,30 @@ var mimeTypes = {
 
 module.exports = function(app, db) {
   app.get('/', function(req, res) {
-    var html =  React.renderComponentToString(ApplicationView());
-    res.render('index', {app: html});
+    var initialState = {
+      route: { page: 'list' },
+      imagesById: {}
+    };
+    var html =  React.renderComponentToString(ApplicationView({preloadData: initialState}));
+    res.render('index', {app: html, preloadData: initialState});
   });
 
   app.get('/image/:img', function(req, res) {
-    var html =  React.renderComponentToString(ApplicationView());
-    res.render('index', {app: html});
+    db.hgetall('img:' + req.params.img, function(err, reply) {
+      var initialState = {
+        route: {
+          page: 'image', image: req.params.img
+        },
+        imagesById: {}
+      };
+
+      initialState.imagesById[req.params.img] = reply;
+      initialState.imagesById[req.params.img].id = req.params.img;
+      initialState.imagesById[req.params.img].extension = reply.type;
+
+      var html =  React.renderComponentToString(ApplicationView({preloadData: initialState}));
+      res.render('index', {app: html, preloadData: initialState});
+    });
   });
 
   app.get(/^\/i\/(\w+)(-t)?.(jpg|jpeg|gif|png)/, function(req, res) {

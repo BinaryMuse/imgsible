@@ -24,9 +24,11 @@ var ApplicationView = React.createClass({
   mixins: [RoutingMixin],
 
   getInitialState: function() {
-    return {
-      imagesById: {}
-    };
+    if (this.props.preloadData) {
+      return this.props.preloadData;
+    } else {
+      return { route: {}, imagesById: {} };
+    }
   },
 
   componentWillMount: function() {
@@ -53,7 +55,7 @@ var ApplicationView = React.createClass({
   },
 
   render: function() {
-    var centerSection;
+    var centerSection = null;
     if (this.state.route.page === 'list') {
       centerSection = <ImageList />;
     } else if (this.state.route.page === 'image') {

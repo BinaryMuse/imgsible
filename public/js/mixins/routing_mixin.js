@@ -1,10 +1,6 @@
 var UrlActions = require('../actions/url_actions.js');
 
 var RoutingMixin = {
-  getInitialState: function() {
-    return { route: {} };
-  },
-
   componentDidMount: function() {
     this.getDOMNode().addEventListener('click', this._handleRouteClick);
   },
