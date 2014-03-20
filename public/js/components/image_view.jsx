@@ -10,7 +10,9 @@ var ImageView = React.createClass({
       content = (
         <div>
           <div>{image.title}</div>
-          <img className='main-image' src={'/i/' + image.id + '.' + image.extension} />
+          <div className='main-image-container'>
+            <img className='main-image' src={'/i/' + image.id + '.' + image.extension} />
+          </div>
           <div>{image.description}</div>
         </div>
       );

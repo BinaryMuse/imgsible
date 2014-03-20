@@ -19,7 +19,8 @@
     "ejs": "^0.8.5",
     "node-jsx": "^0.9.0",
     "envify": "^1.2.1",
-    "react": "^0.9.0"
+    "react": "^0.9.0",
+    "object-merge": "^2.5.1"
   },
   "devDependencies": {
     "foreman": "0.0.26",

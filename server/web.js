@@ -1,10 +1,20 @@
 var fs = require('fs');
 
 var Q = require('q');
+var React = require('react');
 
+var AppDispatcher = require('../public/js/dispatchers/app_dispatcher.js');
 var ApplicationView = require('../public/js/components/application_view.jsx');
 var errors = require('./errors');
-var React = require('react');
+var ImageStore = require('../public/js/stores/image_store.js');
+var UrlStore = require('../public/js/stores/url_store.js');
+
+AppDispatcher.register(ImageStore);
+AppDispatcher.register(UrlStore);
+
+// TODO: break stores into client and server strategies,
+// pass in DB, etc. in order to initialize data
+// -- then get promises and render when complete
 
 var mimeTypes = {
   jpg: 'image/jpeg',

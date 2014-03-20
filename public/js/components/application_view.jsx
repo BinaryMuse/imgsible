@@ -15,11 +15,6 @@ var UploadSidebar = require('./upload_sidebar.jsx');
 var UrlActions = require('../actions/url_actions.js');
 var UrlStore = require('../stores/url_store.js');
 
-var NOT_FOUND = 'NOT_FOUND';
-
-AppDispatcher.register(ImageStore.handleDispatch.bind(ImageStore));
-AppDispatcher.register(UrlStore.handleDispatch.bind(UrlStore));
-
 var ApplicationView = React.createClass({
   mixins: [RoutingMixin],
 
@@ -32,26 +27,9 @@ var ApplicationView = React.createClass({
   },
 
   componentWillMount: function() {
-    UrlStore.on('route', function(route) {
-      this.setState({route: route});
+    AppDispatcher.on('stateUpdate', function(newState) {
+      this.setState(newState);
     }.bind(this));
-
-    ImageStore.on('image:load', function(id, data) {
-      var images = this.state.imagesById;
-      images[id] = data;
-      this.setState({imagesById: images});
-    }.bind(this));
-
-    ImageStore.on('image:notfound', function(id) {
-      var images = this.state.imagesById;
-      images[id] = NOT_FOUND;
-      this.setState({imagesById: images});
-    }.bind(this));
-  },
-
-  componentDidMount: function() {
-    if (this.props.url) UrlActions.changeUrl(this.props.url);
-    this.setState({route: UrlStore.getCurrentRoute()});
   },
 
   render: function() {
@@ -60,7 +38,7 @@ var ApplicationView = React.createClass({
       centerSection = <ImageList />;
     } else if (this.state.route.page === 'image') {
       var image = this.state.imagesById[this.state.route.image];
-      if (image === NOT_FOUND)
+      if (image === ImageStore.NOT_FOUND)
         centerSection = <ImageNotFound />;
       else
         centerSection = <ImageView imageId={this.state.route.image} image={image} />;

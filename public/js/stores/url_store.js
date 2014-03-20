@@ -3,12 +3,9 @@ var util = require('util');
 
 var Director = require('director');
 
-var BaseStore = require('./base_store.js');
 var UrlActions = require('../actions/url_actions.js');
 
 function UrlStore() {
-  BaseStore.call(this);
-
   var store = this;
 
   var routes = {
@@ -36,15 +33,16 @@ function UrlStore() {
   }
 }
 
-util.inherits(UrlStore, BaseStore);
-
 UrlStore.prototype.setRoute = function(route) {
   this.currentRoute = route;
-  this.emit('route', route);
 };
 
 UrlStore.prototype.getCurrentRoute = function() {
   return this.currentRoute;
+};
+
+UrlStore.prototype.getState = function() {
+  return { route: this.currentRoute };
 };
 
 UrlStore.prototype.handleDispatch = function(type, action) {
@@ -55,6 +53,8 @@ UrlStore.prototype.handleDispatch = function(type, action) {
     } else {
       this._router.setRoute(href);
     }
+
+    return this.getState();
   }
 }
 
