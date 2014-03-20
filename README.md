@@ -3,6 +3,17 @@ Imgeer
 
 Imgeer is an image upload and sharing site in the spirit of the excellent image sharing site [Imgur](http://imgur.com) built to demonstrate building a non-trivial isomorphic application with [React](http://facebook.github.io/react/).
 
+Running
+-------
+
+Requires Node.js and Redis.
+
+* `npm install`
+* `redis-server conf/redis.development.conf` (in another console, or in the background)
+* `npm start`
+
+The client bundle will automatically build and the web server will start.
+
 Architecture
 ------------
 
