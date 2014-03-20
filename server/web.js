@@ -2,7 +2,9 @@ var fs = require('fs');
 
 var Q = require('q');
 
+var ApplicationView = require('../public/js/components/application_view.jsx');
 var errors = require('./errors');
+var React = require('react');
 
 var mimeTypes = {
   jpg: 'image/jpeg',
@@ -12,7 +14,13 @@ var mimeTypes = {
 
 module.exports = function(app, db) {
   app.get('/', function(req, res) {
-    res.sendfile('public/index.html');
+    var html =  React.renderComponentToString(ApplicationView());
+    res.render('index', {app: html});
+  });
+
+  app.get('/image/:img', function(req, res) {
+    var html =  React.renderComponentToString(ApplicationView());
+    res.render('index', {app: html});
   });
 
   app.get(/^\/i\/(\w+)(-t)?.(jpg|jpeg|gif|png)/, function(req, res) {

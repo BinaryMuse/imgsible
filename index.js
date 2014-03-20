@@ -1,3 +1,6 @@
+require('node-jsx').install({extension: '.jsx'});
+global.React = require('react');
+
 var http = require('http');
 
 var express = require('express');
@@ -25,6 +28,7 @@ db.on('connect', function() {
 
 app.set('root', __dirname);
 app.set('uploadDir', __dirname + '/images-upload');
+app.set('view engine', 'ejs');
 
 app.use(express.logger());
 app.use(express.compress());

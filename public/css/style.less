@@ -1,5 +1,5 @@
 @light-color: #62c1ff;
-@width: 930px;
+@width: 920px;
 
 * {
   box-sizing: border-box;
@@ -25,6 +25,13 @@ p {
 #content {
   width: @width;
   margin: 0 auto;
+  min-height: 500px;
+}
+
+#center {
+  width: 610px;
+  min-height: 500px;
+  float: left;
 }
 
 // Header
@@ -53,13 +60,17 @@ p {
   padding-bottom: 10px;
 }
 
-#image-list {
+.center-bar {
   width: 610px;
   float: left;
   vertical-align: top;
   background-color: #333;
   padding: 5px;
   border-radius: 5px;
+}
+
+#image-list {
+  .center-bar();
 
   .selector {
     a {
@@ -87,6 +98,14 @@ p {
       border: 5px solid #fff;
       cursor: pointer;
     }
+  }
+}
+
+#single-image {
+  .center-bar();
+
+  .main-image {
+    max-width: 600px;
   }
 }
 
