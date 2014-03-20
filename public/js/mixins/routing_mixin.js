@@ -38,7 +38,7 @@ var RoutingMixin = {
       e.preventDefault();
 
       var href = target.attributes.href.value;
-      UrlActions.changeUrl(href);
+      this.dispatcher.dispatch(UrlActions.changeUrl(href));
     }
   }
 };

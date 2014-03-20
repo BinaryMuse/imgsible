@@ -6,9 +6,10 @@ var Router = require('route-recognizer').default;
 
 var UrlActions = require('../actions/url_actions.js');
 
-function UrlStore() {
+function UrlStore(initialRoute) {
   var router;
   router = this._router = new Router();
+  this.currentRoute = (initialRoute || {});
 
   router.add([{
     path: '/',
@@ -44,7 +45,7 @@ UrlStore.prototype.getState = function() {
 };
 
 UrlStore.prototype.handleDispatch = function(type, action) {
-  if (type === UrlActions.CHANGE_URL) {
+  if (type === UrlActions.changeUrl) {
     var href = action.url;
     if (href.indexOf('http://') === 0 || href.indexOf('https://') === 0) {
       document.location = href;
@@ -59,7 +60,7 @@ UrlStore.prototype.handleDispatch = function(type, action) {
     }
 
     return this.getState();
-  } else if (type === UrlActions.CHANGE_URL_FROM_REQ) {
+  } else if (type === UrlActions.setUrlFromRequest) {
     var uri = url.parse(action.url);
     var results = this._router.recognize(uri.pathname);
     if (results.length) {
@@ -72,4 +73,4 @@ UrlStore.prototype.handleDispatch = function(type, action) {
   }
 }
 
-module.exports = new UrlStore();
+module.exports = UrlStore;

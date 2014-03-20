@@ -1,9 +1,13 @@
 /** @jsx React.DOM */
 
-var Application = require('./application.js');
+var AppDispatcher = require('./dispatchers/app_dispatcher.js');
 var ApplicationView = require('./components/application_view.jsx');
+var ImageStore = require('./stores/image_store.js');
+var UrlStore = require('./stores/url_store.js');
 
 var preloadData = window.preloadData;
+var dispatcher = new AppDispatcher();
+dispatcher.register('image', new ImageStore(ImageStore.ClientFetchStrategy()));
+dispatcher.register('url', new UrlStore(preloadData.route));
 
-Application();
-React.renderComponent(<ApplicationView preloadData={preloadData} />, document.getElementById('app'));
+React.renderComponent(<ApplicationView preloadData={preloadData} dispatcher={dispatcher} />, document.getElementById('app'));

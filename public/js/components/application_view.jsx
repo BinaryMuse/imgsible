@@ -3,7 +3,7 @@
 var querystring = require('querystring');
 var url = require('url');
 
-var AppDispatcher = require('../dispatchers/app_dispatcher.js');
+var DispatcherMixin = require('../mixins/dispatcher_mixin.js');
 var Header = require('./header.jsx');
 var ImageView = require('./image_view.jsx');
 var ImageList = require('./image_list.jsx');
@@ -16,7 +16,7 @@ var UrlActions = require('../actions/url_actions.js');
 var UrlStore = require('../stores/url_store.js');
 
 var ApplicationView = React.createClass({
-  mixins: [RoutingMixin],
+  mixins: [RoutingMixin, DispatcherMixin],
 
   getInitialState: function() {
     if (this.props.preloadData) {
@@ -27,7 +27,7 @@ var ApplicationView = React.createClass({
   },
 
   componentWillMount: function() {
-    AppDispatcher.on('stateUpdate', function(newState) {
+    this.dispatcher.on('stateUpdate', function(newState) {
       this.setState(newState);
     }.bind(this));
   },

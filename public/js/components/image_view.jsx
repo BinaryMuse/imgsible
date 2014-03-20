@@ -1,8 +1,11 @@
 /** @jsx React.DOM **/
 
 var ImageActions = require('../actions/image_actions.js');
+var DispatcherMixin = require('../mixins/dispatcher_mixin.js');
 
 var ImageView = React.createClass({
+  mixins: [DispatcherMixin],
+
   render: function() {
     var content;
     if (this.props.image) {
@@ -28,7 +31,7 @@ var ImageView = React.createClass({
   },
 
   componentDidMount: function() {
-    ImageActions.loadImage(this.props.imageId);
+    this.dispatcher.dispatch(ImageActions.loadImage(this.props.imageId));
   }
 });
 

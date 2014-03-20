@@ -6,19 +6,27 @@ var Q = require('q');
 
 function AppDispatcher() {
   events.EventEmitter.call(this);
-  this.stores = [];
+  this.stores = {};
+  this.actions = {};
 }
 
 util.inherits(AppDispatcher, events.EventEmitter);
 
-AppDispatcher.prototype.register = function(store) {
-  this.stores.push(store);
+AppDispatcher.prototype.register = function(name, store) {
+  this.stores[name] = store;
 };
 
-AppDispatcher.prototype.dispatch = function(type, action) {
+AppDispatcher.prototype.store = function(name) {
+  return this.stores[name];
+};
+
+AppDispatcher.prototype.dispatch = function(action) {
+  var type = action.type;
+  var data = action.data;
+
   var promises = [];
-  for (i in this.stores) {
-    var promise = this.stores[i].handleDispatch(type, action);
+  for (key in this.stores) {
+    var promise = this.stores[key].handleDispatch(type, data);
     promises.push(promise);
   }
 
@@ -31,6 +39,12 @@ AppDispatcher.prototype.dispatch = function(type, action) {
     this.emit('stateUpdate', state);
     return state;
   }.bind(this));
-}
+};
 
-module.exports = new AppDispatcher();
+AppDispatcher.prototype.destroy = function() {
+  this.stores = {};
+  this.actions = {};
+  this.removeAllListeners();
+};
+
+module.exports = AppDispatcher;
