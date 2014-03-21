@@ -5,7 +5,7 @@ var InfoSidebar = React.createClass({
     return (
       <div id='info-sidebar'>
         <h1>What is this?</h1>
-        <p>Imgeer is a small application in the spirit of the awesome image sharing
+        <p>Imgsible is a small application in the spirit of the awesome image sharing
           site <a href='http://imgur.com/'>Imgur</a> to demonstrate a
           non-trivial <a href='http://facebook.github.io/react/'>React</a> application. It is
           not intended for general use; you should head over to Imgur for that!</p>
