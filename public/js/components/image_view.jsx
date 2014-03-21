@@ -62,7 +62,7 @@ var ImageView = React.createClass({
     this.dispatcher.dispatch(ImageActions.loadImage(this.props.imageId));
   },
 
-  componentWillUpdate: function(nextProps) {
+  componentWillReceiveProps: function(nextProps) {
     if (nextProps.imageId !== this.props.imageId) {
       this.setState({zoomed: false});
       this.dispatcher.dispatch(ImageActions.loadImage(nextProps.imageId));
