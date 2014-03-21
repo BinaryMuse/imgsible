@@ -30,19 +30,21 @@ var ImageView = React.createClass({
       var zoomedImage = null;
       if (this.state.zoomed) {
         var style = this.calculateZoomedStyles();
-        zoomedImage = <img className={foregroundClasses} src={'/i/' + image.id + '.' + image.extension}
-             onClick={this.toggleZoom} style={style} />;
+        zoomedImage = <img className={foregroundClasses}
+          src={'/i/' + image.id + '.' + image.extension} style={style} />;
       }
 
       content = (
         <div>
-          <div>{image.title}</div>
+          <div className='title'>{image.title}</div>
           <div className='main-image-container'>
-            <img className={backgroundClasses} src={'/i/' + image.id + '.' + image.extension}
-                 onClick={this.toggleZoom} />
+            <a href={'/i/' + image.id + '.' + image.extension} target='_blank'>
+              <img className={backgroundClasses} src={'/i/' + image.id + '.' + image.extension}
+                onClick={this.toggleZoom} />
+            </a>
             {zoomedImage}
           </div>
-          <div>{image.description}</div>
+          <div className='description'>{image.description}</div>
         </div>
       );
     } else {
@@ -67,13 +69,23 @@ var ImageView = React.createClass({
     }
   },
 
-  toggleZoom: function() {
-    if (this.isZoomable())
+  toggleZoom: function(e) {
+    e.preventDefault();
+    var zoomed = this.state.zoomed;
+
+    var unzoom = function() {
+      this.setState({zoomed: false});
+      document.removeEventListener('click', unzoom);
+    }.bind(this);
+
+    if (this.isZoomable()) {
       this.setState({zoomed: !this.state.zoomed});
+      document.addEventListener('click', unzoom);
+    }
   },
 
   calculateZoomedStyles: function() {
-    var windowWidth = window.innerWidth - 40;
+    var windowWidth = document.documentElement.clientWidth - 40;
     var x = 20;
     var y = 20;
     var maxWidth = windowWidth;

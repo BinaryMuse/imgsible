@@ -34,6 +34,9 @@ var RoutingMixin = {
     }
 
     if (!target) return;
+    var openIn = target.attributes.target && target.attributes.target.value;
+    if (openIn) return;
+
     if (!e.altKey && !e.ctrlKey && !e.shiftKey && !e.metaKey) {
       e.preventDefault();
 
