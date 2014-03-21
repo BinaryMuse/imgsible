@@ -25,6 +25,8 @@ The client bundle will automatically build and the web server will start. Use th
 Architecture
 ------------
 
+> **Note:** This is in no way the ideal architecture. It has some drawbacks; see the ["Limitations" section](#limitations), below, for details. It does, however, solve some of my problems, so here it is. :)
+
 When a view needs to update the application-level state--for instance, when the user interacts with the UI--it uses the *Dispatcher*. The dispatcher is an object that references one or more *Stores* and dispatches *Actions* to each of them.
 
 Stores are added to the Dispatcher via its `register` method. The Store must implement a `handleDispatch` method, taking `type` and `data` parameters, to handle Actions dispatched from the Dispatcher. `handleDispatch` must return the portion of the application state that the Store manages (or a promise of that state if the handler is asynchronous).
@@ -76,3 +78,9 @@ There are, currently, some limitations to this approach. For one, Stores cannot 
 Additionally, the Dispatcher can potentially get a bit confused if multiple Actions are dispatched very close together and one of the Stores is slow to resolve its promise. The race condition caused by the ordering of the promises being resolved can end up setting state that is not accurate. In practice (so far) this isn't a huge issue because most Actions only affect one store and long-running asynchronous actions tend to be relatively far apart.
 
 Finally, it's difficult for Stores to *push* data to the UI when their state changes asynchronously--for example, an Action that starts a file upload returns a single promise, but it may be useful to provide multiple UI updates as the upload progresses. Currently, the Dispatcher has a method called `refreshState` that calls `getState` on each Store and merges them together, but this is not a great long-term solution.
+
+But what about...
+-----------------
+
+* **Why not use react-async and react-router-component?** One of my goals with this app was to determine how complicated things like routing and asynchronous data loading were, so I built them by hand. The aforementioned libraries, as well as many others, are great resources.
+* **Why is routing handled by a Store?** I thought it would be interesting to see how it would look if the `route` portion of the application state was handled by a Store like any other piece of the state.
