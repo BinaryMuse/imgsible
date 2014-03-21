@@ -52,7 +52,6 @@ module.exports = function(app, db) {
   });
 
   app.get(/^\/i\/(\w+)(-t)?.(jpg|jpeg|gif|png)/, function(req, res) {
-    // TODO: unify errors
     Q.nfcall(db.hgetall.bind(db), 'img:' + req.params[0]).then(function(reply) {
       if (!reply) {
         errors.notFound(res);

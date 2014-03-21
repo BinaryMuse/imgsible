@@ -68,3 +68,7 @@ A React [mixin](http://facebook.github.io/react/docs/reusable-components.html#mi
 On the server, we set up the Stores so that they use a server-appropriate strategy for responding to events. When a request comes in for a particular URL, we trigger the appropriate Actions for that page and collect the promises returned. When they are all resolved, we render the top-level component as a string and pass in the merged state as a property.
 
 Additionally, the merged state is provided to the client via a property on `window` so that the client-app can boot with the same data. This gives us server rendering of the application with a transparent upgrade to a fully functional front-end React app when the JavaScript loads.
+
+### Limitations
+
+There are, currently, some limitations to this approach. For one, Stores cannot use information from each other. For example, one Action tells the `UrlStore` to update the `route` portion of the state, while a separate Action tells the `ImageStore` to load the image data for a given image. There is no way for the `UrlStore` to use some of the image data--say, the title--to update a portion of *its* state. Ideally, dependencies could be set up between the stores, which would additionally remove the need to fire multiple Actions to get the UI in a certain state.
