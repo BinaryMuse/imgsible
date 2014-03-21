@@ -18,10 +18,15 @@ var mimeTypes = {
 };
 
 module.exports = function(app, db) {
-  app.get('/', function(req, res) {
+  function createDispatcher() {
     var dispatcher = new AppDispatcher();
-    dispatcher.register('image', new ImageStore(ImageStore.ServerFetchStrategy(db)));
-    dispatcher.register('url', new UrlStore());
+    dispatcher.register(new ImageStore(ImageStore.ServerFetchStrategy(db)));
+    dispatcher.register(new UrlStore());
+    return dispatcher;
+  }
+
+  app.get('/', function(req, res) {
+    var dispatcher = createDispatcher();
 
     var promise = dispatcher.dispatch(UrlActions.setUrlFromRequest(req.url));
     promise.then(function(state) {
@@ -32,9 +37,7 @@ module.exports = function(app, db) {
   });
 
   app.get('/image/:img', function(req, res) {
-    var dispatcher = new AppDispatcher();
-    dispatcher.register('image', new ImageStore(ImageStore.ServerFetchStrategy(db)));
-    dispatcher.register('url', new UrlStore());
+    var dispatcher = createDispatcher();
 
     var promise = dispatcher.dispatch(UrlActions.setUrlFromRequest(req.url)).then(function() {
       return dispatcher.dispatch(ImageActions.loadImage(req.params.img));

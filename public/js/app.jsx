@@ -7,7 +7,7 @@ var UrlStore = require('./stores/url_store.js');
 
 var preloadData = window.preloadData;
 var dispatcher = new AppDispatcher();
-dispatcher.register('image', new ImageStore(ImageStore.ClientFetchStrategy()));
-dispatcher.register('url', new UrlStore(preloadData.route));
+dispatcher.register(new ImageStore(ImageStore.ClientFetchStrategy()));
+dispatcher.register(new UrlStore(preloadData.route));
 
 React.renderComponent(<ApplicationView preloadData={preloadData} dispatcher={dispatcher} />, document.getElementById('app'));

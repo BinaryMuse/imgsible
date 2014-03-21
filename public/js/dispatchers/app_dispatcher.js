@@ -6,18 +6,13 @@ var Q = require('q');
 
 function AppDispatcher() {
   events.EventEmitter.call(this);
-  this.stores = {};
-  this.actions = {};
+  this.stores = [];
 }
 
 util.inherits(AppDispatcher, events.EventEmitter);
 
-AppDispatcher.prototype.register = function(name, store) {
-  this.stores[name] = store;
-};
-
-AppDispatcher.prototype.store = function(name) {
-  return this.stores[name];
+AppDispatcher.prototype.register = function(store) {
+  this.stores.push(store);
 };
 
 AppDispatcher.prototype.dispatch = function(action) {
@@ -25,8 +20,8 @@ AppDispatcher.prototype.dispatch = function(action) {
   var data = action.data;
 
   var promises = [];
-  for (key in this.stores) {
-    var promise = this.stores[key].handleDispatch(type, data);
+  for (i in this.stores) {
+    var promise = this.stores[i].handleDispatch(type, data);
     promises.push(promise);
   }
 
@@ -42,8 +37,7 @@ AppDispatcher.prototype.dispatch = function(action) {
 };
 
 AppDispatcher.prototype.destroy = function() {
-  this.stores = {};
-  this.actions = {};
+  this.stores = [];
   this.removeAllListeners();
 };
 
