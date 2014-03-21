@@ -6,11 +6,19 @@ Imgeer is an image upload and sharing site in the spirit of the excellent image 
 Running
 -------
 
-Requires Node.js and Redis.
+Prerequisites:
 
-* `npm install`
-* `redis-server conf/redis.development.conf` (in another console, or in the background)
-* `npm start`
+* Node.js
+* Redis
+* GraphicsMagick
+
+On OS X, these are all available via [Homebrew](http://brew.sh/).
+
+Once you have satisfied the prerequisites, you can install and start the application. Clone the app, and from its directory run:
+
+1. `npm install`
+2. `redis-server conf/redis.development.conf` (in another console, or in the background)
+3. `npm start`
 
 The client bundle will automatically build and the web server will start. Use the `PORT` environment variable if you want to specify the port the HTTP server binds to.
 
