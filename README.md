@@ -59,7 +59,7 @@ statePromise.then(function(state) {
 
 The Dispatcher is an EventEmitter; the top-level React component for an application can listen for the `stateUpdate` event which is emitted when the promises for an Action are resolved, and provides the same data as the promise returned from `dispatch`.
 
-Once the top-level component calls `setState`, the updated state flows downward to child components, none of which have access to the Stores directly.
+Once the top-level component calls `setState`, the updated state flows downward to child components, none of which have access to the Stores directly. Since there is a period of time between a view dispatching an Action and that Action resulting in a new state being emitted, it's important that components are able to render in the absence of that state. For example, the `ImageView` component shows a loading message if it doesn't yet have its image data.
 
 ### Accessing the Dispatcher
 
