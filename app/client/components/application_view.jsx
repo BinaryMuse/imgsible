@@ -12,8 +12,7 @@ var ImageStore = require('../stores/image_store.js');
 var InfoSidebar = require('./info_sidebar.jsx');
 var RoutingMixin = require('../mixins/routing_mixin.js');
 var UploadSidebar = require('./upload_sidebar.jsx');
-var UrlActions = require('../actions/url_actions.js');
-var UrlStore = require('../stores/url_store.js');
+var RouteActions = require('../actions/route_actions.js');
 
 var ApplicationView = React.createClass({
   mixins: [RoutingMixin, DispatcherMixin],

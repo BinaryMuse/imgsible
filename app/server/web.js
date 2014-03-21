@@ -9,8 +9,8 @@ var errors = require('./errors');
 var ImageActions = require('../client/actions/image_actions.js');
 var ImageDb = require('./databases/image_db.js');
 var ImageStore = require('../client/stores/image_store.js');
-var UrlActions = require('../client/actions/url_actions.js');
-var UrlStore = require('../client/stores/url_store.js');
+var RouteActions = require('../client/actions/route_actions.js');
+var RouteStore = require('../client/stores/route_store.js');
 
 var mimeTypes = {
   jpg: 'image/jpeg',
@@ -22,14 +22,14 @@ module.exports = function(app, db) {
   function createDispatcher() {
     var dispatcher = new AppDispatcher();
     dispatcher.register(new ImageStore(ImageDb(db)));
-    dispatcher.register(new UrlStore());
+    dispatcher.register(new RouteStore());
     return dispatcher;
   }
 
   app.get('/', function(req, res) {
     var dispatcher = createDispatcher();
 
-    var promise = dispatcher.dispatch(UrlActions.setUrlFromRequest(req.url));
+    var promise = dispatcher.dispatch(RouteActions.setUrlFromRequest(req.url));
     promise.then(function(state) {
       var html =  React.renderComponentToString(ApplicationView({preloadData: state, dispatcher: dispatcher}));
       res.render('index', {app: html, preloadData: state});
@@ -40,7 +40,7 @@ module.exports = function(app, db) {
   app.get('/image/:img', function(req, res) {
     var dispatcher = createDispatcher();
 
-    var promise = dispatcher.dispatch(UrlActions.setUrlFromRequest(req.url)).then(function() {
+    var promise = dispatcher.dispatch(RouteActions.setUrlFromRequest(req.url)).then(function() {
       return dispatcher.dispatch(ImageActions.loadImage(req.params.img));
     });
 

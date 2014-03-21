@@ -1,4 +1,4 @@
-var UrlActions = require('../actions/url_actions.js');
+var RouteActions = require('../actions/route_actions.js');
 
 var RoutingMixin = {
   // TODO: figure out why this dies on the server when the preloadData
@@ -17,7 +17,7 @@ var RoutingMixin = {
         return;
       }
       var path = document.location.toString().replace(document.location.origin, '');
-      this.dispatcher.dispatch(UrlActions.changeUrl(path, true));
+      this.dispatcher.dispatch(RouteActions.changeUrl(path, true));
     }.bind(this);
   },
 
@@ -39,7 +39,7 @@ var RoutingMixin = {
       e.preventDefault();
 
       var href = target.attributes.href.value;
-      this.dispatcher.dispatch(UrlActions.changeUrl(href));
+      this.dispatcher.dispatch(RouteActions.changeUrl(href));
     }
   }
 };

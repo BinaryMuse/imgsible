@@ -73,7 +73,7 @@ Additionally, the merged state is provided to the client via a property on `wind
 
 ### Limitations
 
-There are, currently, some limitations to this approach. For one, Stores cannot use information from each other. For example, one Action tells the `UrlStore` to update the `route` portion of the state, while a separate Action tells the `ImageStore` to load the image data for a given image. There is no way for the `UrlStore` to use some of the image data--say, the title--to update a portion of *its* state. Ideally, dependencies could be set up between the stores, which would also remove the need to fire multiple Actions to get the UI in a certain state.
+There are, currently, some limitations to this approach. For one, Stores cannot use information from each other. For example, one Action tells the `RouteStore` to update the `route` portion of the state, while a separate Action tells the `ImageStore` to load the image data for a given image. There is no way for the `RouteStore` to use some of the image data--say, the title--to update a portion of *its* state. Ideally, dependencies could be set up between the stores, which would also remove the need to fire multiple Actions to get the UI in a certain state.
 
 Additionally, the Dispatcher can potentially get a bit confused if multiple Actions are dispatched very close together and one of the Stores is slow to resolve its promise. The race condition caused by the ordering of the promises being resolved can end up setting state that is not accurate. In practice (so far) this isn't a huge issue because most Actions only affect one store and long-running asynchronous actions tend to be relatively far apart.
 

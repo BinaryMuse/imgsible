@@ -4,9 +4,9 @@ var util = require('util');
 
 var Router = require('route-recognizer').default;
 
-var UrlActions = require('../actions/url_actions.js');
+var RouteActions = require('../actions/route_actions.js');
 
-function UrlStore(initialRoute) {
+function RouteStore(initialRoute) {
   var router;
   router = this._router = new Router();
   this.currentRoute = (initialRoute || {});
@@ -32,20 +32,20 @@ function UrlStore(initialRoute) {
   }]);
 }
 
-UrlStore.prototype.setRoute = function(route) {
+RouteStore.prototype.setRoute = function(route) {
   this.currentRoute = route;
 };
 
-UrlStore.prototype.getCurrentRoute = function() {
+RouteStore.prototype.getCurrentRoute = function() {
   return this.currentRoute;
 };
 
-UrlStore.prototype.getState = function() {
+RouteStore.prototype.getState = function() {
   return { route: this.currentRoute };
 };
 
-UrlStore.prototype.handleDispatch = function(type, action) {
-  if (type === UrlActions.changeUrl) {
+RouteStore.prototype.handleDispatch = function(type, action) {
+  if (type === RouteActions.changeUrl) {
     var href = action.url;
     if (href.indexOf('http://') === 0 || href.indexOf('https://') === 0) {
       document.location = href;
@@ -60,7 +60,7 @@ UrlStore.prototype.handleDispatch = function(type, action) {
     }
 
     return this.getState();
-  } else if (type === UrlActions.setUrlFromRequest) {
+  } else if (type === RouteActions.setUrlFromRequest) {
     var uri = url.parse(action.url);
     var results = this._router.recognize(uri.pathname);
     if (results.length) {
@@ -73,4 +73,4 @@ UrlStore.prototype.handleDispatch = function(type, action) {
   }
 }
 
-module.exports = UrlStore;
+module.exports = RouteStore;
