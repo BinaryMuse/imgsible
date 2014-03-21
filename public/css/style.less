@@ -12,6 +12,7 @@ body {
   color: white;
   font-family: 'Alegreya Sans', sans-serif;
   font-size: 13pt;
+  overflow-y: scroll;
 }
 
 a {
@@ -110,6 +111,14 @@ p {
 
   .main-image {
     max-width: 600px;
+
+    &.zoomable {
+      cursor: url(/images/zoom.cur), default;
+    }
+
+    &.zoomed {
+      opacity: 0;
+    }
   }
 }
 
