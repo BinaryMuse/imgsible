@@ -51,7 +51,7 @@ UrlStore.prototype.handleDispatch = function(type, action) {
       document.location = href;
     } else {
       var results = this._router.recognize(href);
-      if (results.length) {
+      if (results && results.length) {
         var route = results[0].handler(action.url, results[0].params);
         this.currentRoute = route;
         if (!action.skipHistory) history.pushState(href, '', href);

@@ -12,6 +12,7 @@ function AppDispatcher() {
 util.inherits(AppDispatcher, events.EventEmitter);
 
 AppDispatcher.prototype.register = function(store) {
+  store._dispatcher = this;
   this.stores.push(store);
 };
 
@@ -34,6 +35,20 @@ AppDispatcher.prototype.dispatch = function(action) {
     this.emit('stateUpdate', state);
     return state;
   }.bind(this));
+};
+
+AppDispatcher.prototype.refreshState = function() {
+  var states = [];
+  for (i in this.stores) {
+    states.push(this.stores[i].getState());
+  }
+
+  var result = states.reduce(function(curr, state) {
+    if (state) return merge(curr, state);
+    else return curr;
+  }, {});
+
+  this.emit('stateUpdate', result);
 };
 
 AppDispatcher.prototype.destroy = function() {

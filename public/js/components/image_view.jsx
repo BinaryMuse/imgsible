@@ -32,6 +32,11 @@ var ImageView = React.createClass({
 
   componentDidMount: function() {
     this.dispatcher.dispatch(ImageActions.loadImage(this.props.imageId));
+  },
+
+  componentWillUpdate: function(nextProps) {
+    if (nextProps.imageId !== this.props.imageId)
+      this.dispatcher.dispatch(ImageActions.loadImage(nextProps.imageId));
   }
 });
 

@@ -55,7 +55,7 @@ var ApplicationView = React.createClass({
             {centerSection}
           </div>
           <InfoSidebar />
-          <UploadSidebar />
+          <UploadSidebar upload={this.state.upload} />
         </div>
       </div>
     );

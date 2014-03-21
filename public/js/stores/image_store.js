@@ -8,16 +8,22 @@ var NOT_FOUND = 'IMAGE_NOT_FOUND';
 
 function ImageStore(imageFetchStrategy) {
   this.imagesById = {};
+  this.upload = { view: 'form' };
   this.imageFetchStrategy = imageFetchStrategy;
 }
 
 ImageStore.prototype.getState = function() {
-  return { imagesById: this.imagesById };
+  return { imagesById: this.imagesById, upload: this.upload };
 };
 
 ImageStore.prototype.handleDispatch = function(type, action) {
   if (type === ImageActions.loadImage) {
     return this.fetchImageData(action.id);
+  } else if (type === ImageActions.uploadImage) {
+    return this.uploadImage(action.form);
+  } else if (type === ImageActions.resetUploadForm) {
+    this.upload = { view: 'form' };
+    return this.getState();
   } else {
     return this.getState();
   }
@@ -25,6 +31,38 @@ ImageStore.prototype.handleDispatch = function(type, action) {
 
 ImageStore.prototype.fetchImageData = function(id) {
   return this.imageFetchStrategy(id);
+};
+
+ImageStore.prototype.uploadImage = function(form) {
+  var store = this;
+  var reader = new FileReader();
+  var xhr = new XMLHttpRequest();
+
+  xhr.upload.addEventListener('progress', function(e) {
+    if (e.lengthComputable) {
+      var percent = Math.round((e.loaded * 100) / e.total);
+    }
+  }, false);
+
+  var formData = new FormData(form);
+
+  xhr.open('POST', '/api/upload');
+  xhr.responseType = 'text';
+  xhr.send(formData);
+  xhr.onload = function(e) {
+    if (this.status === 201) {
+      data = JSON.parse(this.responseText);
+      store.upload = { view: 'success', image: data };
+      store._dispatcher.refreshState();
+    } else {
+      console.error(this);
+      store.upload = { view: 'error' };
+      store._dispatcher.refreshState();
+    }
+  };
+
+  this.upload = { view: 'progress' };
+  return this.getState();
 };
 
 ImageStore.NOT_FOUND = NOT_FOUND;
