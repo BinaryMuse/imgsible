@@ -45,7 +45,6 @@ module.exports = function(app, db) {
     });
 
     promise.then(function(state) {
-      console.log('got me some states', state);
       var html =  React.renderComponentToString(ApplicationView({preloadData: state, dispatcher: dispatcher}));
       res.render('index', {app: html, preloadData: state});
       dispatcher.destroy();
