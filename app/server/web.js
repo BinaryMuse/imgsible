@@ -7,6 +7,7 @@ var AppDispatcher = require('../client/dispatchers/app_dispatcher.js');
 var ApplicationView = require('../client/components/application_view.jsx');
 var errors = require('./errors');
 var ImageActions = require('../client/actions/image_actions.js');
+var ImageDb = require('./databases/image_db.js');
 var ImageStore = require('../client/stores/image_store.js');
 var UrlActions = require('../client/actions/url_actions.js');
 var UrlStore = require('../client/stores/url_store.js');
@@ -20,7 +21,7 @@ var mimeTypes = {
 module.exports = function(app, db) {
   function createDispatcher() {
     var dispatcher = new AppDispatcher();
-    dispatcher.register(new ImageStore(ImageStore.ServerFetchStrategy(db)));
+    dispatcher.register(new ImageStore(ImageDb(db)));
     dispatcher.register(new UrlStore());
     return dispatcher;
   }
@@ -44,6 +45,7 @@ module.exports = function(app, db) {
     });
 
     promise.then(function(state) {
+      console.log('got me some states', state);
       var html =  React.renderComponentToString(ApplicationView({preloadData: state, dispatcher: dispatcher}));
       res.render('index', {app: html, preloadData: state});
       dispatcher.destroy();

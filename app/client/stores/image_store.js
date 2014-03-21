@@ -6,10 +6,10 @@ var ImageActions = require('../actions/image_actions.js');
 
 var NOT_FOUND = 'IMAGE_NOT_FOUND';
 
-function ImageStore(imageFetchStrategy) {
+function ImageStore(imageDb) {
   this.imagesById = {};
   this.upload = { view: 'form' };
-  this.imageFetchStrategy = imageFetchStrategy;
+  this.imageDb = imageDb;
 }
 
 ImageStore.prototype.getState = function() {
@@ -30,7 +30,13 @@ ImageStore.prototype.handleDispatch = function(type, action) {
 };
 
 ImageStore.prototype.fetchImageData = function(id) {
-  return this.imageFetchStrategy(id);
+  return this.imageDb.find(id).then(function(image) {
+    this.imagesById[id] = image;
+    return this.getState();
+  }.bind(this), function() {
+    this.imagesById[id] = NOT_FOUND;
+    return this.getState();
+  }.bind(this));
 };
 
 ImageStore.prototype.uploadImage = function(form) {
@@ -66,49 +72,5 @@ ImageStore.prototype.uploadImage = function(form) {
 };
 
 ImageStore.NOT_FOUND = NOT_FOUND;
-
-ImageStore.ServerFetchStrategy = function(db) {
-  return function(id) {
-    var store = this;
-
-    var deferred = Q.defer();
-    db.hgetall('img:' + id, function(err, reply) {
-      if (err || !reply) {
-        store.imagesById[id] = NOT_FOUND;
-      } else {
-        store.imagesById[id] = reply;
-        store.imagesById[id].id = id
-        store.imagesById[id].extension = reply.type;
-      }
-      deferred.resolve(store.getState());
-    });
-
-    return deferred.promise;
-  }
-};
-
-ImageStore.ClientFetchStrategy = function() {
-  return function(id) {
-    var store = this;
-
-    var deferred = Q.defer();
-    var xhr = new XMLHttpRequest();
-
-    xhr.open('GET', '/api/image/' + id);
-    xhr.onload = function(e) {
-      if (this.status === 200) {
-        var data = JSON.parse(this.response);
-        store.imagesById[id] = data;
-      } else if (this.status === 404) {
-        store.imagesById[id] = NOT_FOUND;
-      }
-
-      deferred.resolve(store.getState());
-    };
-    xhr.send();
-
-    return deferred.promise;
-  }
-};
 
 module.exports = ImageStore;

@@ -33,6 +33,8 @@ app.set('view engine', 'ejs');
 app.use(express.logger());
 app.use(express.compress());
 app.use(express.static(app.get('root') + '/public'));
+app.use(app.router);
+if (app.get('env') === 'production') app.use(express.errorHandler());
 
 [api, web].forEach(function(extension) {
   extension(app, db);
