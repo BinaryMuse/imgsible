@@ -1,5 +1,5 @@
 require('node-jsx').install({extension: '.jsx'});
-global.React = require('react');
+global.React = require('react/addons');
 
 var http = require('http');
 
