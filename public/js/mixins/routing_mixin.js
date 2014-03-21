@@ -17,8 +17,8 @@ var RoutingMixin = {
         return;
       }
       var path = document.location.toString().replace(document.location.origin, '');
-      UrlActions.changeUrl(path, true);
-    }
+      this.dispatcher.dispatch(UrlActions.changeUrl(path, true));
+    }.bind(this);
   },
 
   componentWillUnmount: function() {
