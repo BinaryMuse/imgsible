@@ -5,6 +5,11 @@
   "main": "index.js",
   "author": "Brandon Tilley <brandon@brandontilley.com>",
   "license": "MIT",
+  "homepage": "https://github.com/BinaryMuse/imgsible",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BinaryMuse/imgsible.git"
+  },
   "scripts": {
     "start": "nf start"
   },
