@@ -3,13 +3,13 @@ var fs = require('fs');
 var Q = require('q');
 var React = require('react');
 
-var AppDispatcher = require('../public/js/dispatchers/app_dispatcher.js');
-var ApplicationView = require('../public/js/components/application_view.jsx');
+var AppDispatcher = require('../client/dispatchers/app_dispatcher.js');
+var ApplicationView = require('../client/components/application_view.jsx');
 var errors = require('./errors');
-var ImageActions = require('../public/js/actions/image_actions.js');
-var ImageStore = require('../public/js/stores/image_store.js');
-var UrlActions = require('../public/js/actions/url_actions.js');
-var UrlStore = require('../public/js/stores/url_store.js');
+var ImageActions = require('../client/actions/image_actions.js');
+var ImageStore = require('../client/stores/image_store.js');
+var UrlActions = require('../client/actions/url_actions.js');
+var UrlStore = require('../client/stores/url_store.js');
 
 var mimeTypes = {
   jpg: 'image/jpeg',

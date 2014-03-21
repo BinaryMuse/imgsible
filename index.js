@@ -6,8 +6,8 @@ var http = require('http');
 var express = require('express');
 var redis = require('redis');
 
-var api = require('./server/api');
-var web = require('./server/web');
+var api = require('./app/server/api');
+var web = require('./app/server/web');
 
 var PORT = process.env.PORT || 3000;
 
