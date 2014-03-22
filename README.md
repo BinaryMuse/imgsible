@@ -25,7 +25,7 @@ The client bundle will automatically build and the web server will start. Use th
 Architecture
 ------------
 
-> **Note:** This is in no way the ideal architecture. It has some drawbacks; see the ["Limitations" section](#limitations), below, for details. It does, however, solve some of my problems, so here it is. :)
+> **Note:** This is in no way the ideal architecture. It has some drawbacks; see the "Pros" and "Cons" sections, below, for details. It does, however, solve some of my problems, so here it is. :)
 
 When a view needs to update the application-level state--for instance, when the user interacts with the UI--it uses the *Dispatcher*. The dispatcher is an object that references one or more *Stores* and dispatches *Actions* to each of them.
 
@@ -71,13 +71,19 @@ On the server, we set up the Stores so that they use a server-appropriate strate
 
 Additionally, the merged state is provided to the client via a property on `window` so that the client-app can boot with the same data. This gives us server rendering of the application with a transparent upgrade to a fully functional front-end React app when the JavaScript loads.
 
-### Limitations
+### Pros
 
-There are, currently, some limitations to this approach. For one, Stores cannot use information from each other. For example, one Action tells the `RouteStore` to update the `route` portion of the state, while a separate Action tells the `ImageStore` to load the image data for a given image. There is no way for the `RouteStore` to use some of the image data--say, the title--to update a portion of *its* state. Ideally, dependencies could be set up between the stores, which would also remove the need to fire multiple Actions to get the UI in a certain state.
+* Components don't have to know about the Stores at all--they are coupled only by the state that the Stores generate.
+* Data flow is still top-down and one-directional from the components perspective. A request for change goes out to the Dispatcher and the new state flows in to the top-level component to flow down to children.
+* Stores can easily be passed parameters to change their behavior on the client and server. For example, the `ImageStore` takes an `ImageDb` as a parameter. The server version uses Redis, while the client version makes XHR requests. They otherwise have the same API and use promises, so the Store need not know the difference.
 
-Additionally, the Dispatcher can potentially get a bit confused if multiple Actions are dispatched very close together and one of the Stores is slow to resolve its promise. The race condition caused by the ordering of the promises being resolved can end up setting state that is not accurate. In practice (so far) this isn't a huge issue because most Actions only affect one store and long-running asynchronous actions tend to be relatively far apart.
+### Cons
 
-Finally, it's difficult for Stores to *push* data to the UI when their state changes asynchronously--for example, an Action that starts a file upload returns a single promise, but it may be useful to provide multiple UI updates as the upload progresses. Currently, the Dispatcher has a method called `refreshState` that calls `getState` on each Store and merges them together, but this is not a great long-term solution.
+* The state emitted by a Store and the components that use that state are tightly coupled. There should probably be an intermediate layer that converts arbitrary data from stores into state usable by React.
+* Stores cannot use information from one another. For example, one Action tells the `RouteStore` to update the `route` portion of the state, while a separate Action tells the `ImageStore` to load the image data for a given image. There is no way for the `RouteStore` to use some of the image data--say, the title--to update a portion of *its* state. Ideally, dependencies could be set up between the stores, which would also remove the need to fire multiple Actions to get the UI in a certain state.
+* The Dispatcher can potentially get a bit confused if multiple Actions are dispatched very close together and one of the Stores is slow to resolve its promise. The race condition caused by the ordering of the promises being resolved can end up setting state that is not accurate. In practice (so far) this isn't a huge issue because most Actions only affect one store and long-running asynchronous actions tend to be relatively far apart.
+* It's difficult for Stores to *push* data to the UI when their state changes asynchronously--for example, an Action that starts a file upload returns a single promise, but it may be useful to provide multiple UI updates as the upload progresses. Currently, the Dispatcher has a method called `refreshState` that calls `getState` on each Store and merges them together, but this is not a great long-term solution.
+* I'm not a huge fan of the way Actions are currently generated. In particular, converting the arguments into an object and then passing that object to the Stores' `handleDispatch` methods is error prone; passing them as arguments all the way down the chain (using `handleDispatch.apply`) would likely be better.
 
 But what about...
 -----------------
