@@ -59,6 +59,10 @@ var ApplicationView = React.createClass({
         </div>
       </div>
     );
+  },
+
+  handleRouteChange: function(newUrl, fromHistory) {
+    this.dispatcher.dispatch(RouteActions.changeUrl(newUrl, fromHistory));
   }
 });
 

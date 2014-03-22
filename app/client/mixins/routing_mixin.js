@@ -1,13 +1,4 @@
-var RouteActions = require('../actions/route_actions.js');
-
 var RoutingMixin = {
-  // TODO: figure out why this dies on the server when the preloadData
-  // includes a `route` key.
-  //
-  // getInitialState: function() {
-  //   return { route: {} };
-  // },
-
   componentDidMount: function() {
     var firstPopState = true;
     this.getDOMNode().addEventListener('click', this._handleRouteClick);
@@ -17,7 +8,7 @@ var RoutingMixin = {
         return;
       }
       var path = document.location.toString().replace(document.location.origin, '');
-      this.dispatcher.dispatch(RouteActions.changeUrl(path, true));
+      this.handleRouteChange(path, true);
     }.bind(this);
   },
 
@@ -39,7 +30,7 @@ var RoutingMixin = {
       e.preventDefault();
 
       var href = target.attributes.href.value;
-      this.dispatcher.dispatch(RouteActions.changeUrl(href));
+      this.handleRouteChange(href, false);
     }
   }
 };
