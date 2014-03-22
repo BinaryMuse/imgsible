@@ -15,10 +15,11 @@ function RouteStore(initialRoute) {
     path: '/',
     handler: function(fullUrl) {
       var uri = url.parse(fullUrl);
-      var params = querystring.parse(uri.query);
+      if (typeof uri.query === 'undefined') uri.query = {};
+      if (typeof uri.query === 'string') uri.query = querystring.parse(uri.query);
       params = {
-        sortdir: params.sortdir || 'desc',
-        start: params.start || null
+        sortdir: uri.query.sortdir || 'desc',
+        start: uri.query.start || null
       };
       return {page: 'list', params: params};
     }
@@ -32,45 +33,60 @@ function RouteStore(initialRoute) {
   }]);
 }
 
-RouteStore.prototype.setRoute = function(route) {
-  this.currentRoute = route;
-};
-
-RouteStore.prototype.getCurrentRoute = function() {
-  return this.currentRoute;
-};
-
 RouteStore.prototype.getState = function() {
   return { route: this.currentRoute };
 };
 
 RouteStore.prototype.handleDispatch = function(type, action) {
   if (type === RouteActions.changeUrl) {
-    var href = action.url;
-    if (href.indexOf('http://') === 0 || href.indexOf('https://') === 0) {
-      document.location = href;
-    } else {
-      var results = this._router.recognize(href);
-      if (results && results.length) {
-        var route = results[0].handler(action.url, results[0].params);
-        this.currentRoute = route;
-        if (!action.skipHistory) history.pushState(href, '', href);
-        return this.getState();
-      }
-    }
-
-    return this.getState();
+    return this.setUrl(action.url);
   } else if (type === RouteActions.setUrlFromRequest) {
-    var uri = url.parse(action.url);
-    var results = this._router.recognize(uri.pathname);
-    if (results.length) {
+    var results = this._router.recognize(action.url);
+    if (results && results.length) {
       var route = results[0].handler(action.url, results[0].params);
       this.currentRoute = route;
-      return this.getState();
     }
+    return this.getState();
+  } else if (type === RouteActions.modifyQuery) {
+    return this.modifyQueryParams(action.query);
   } else {
     return this.getState();
   }
+};
+
+RouteStore.prototype.setUrl = function(href, skipHistory, assumeLocal) {
+  var isFullUrl = function(url) {
+    return url.indexOf('http://') === 0 || url.indexOf('https://') === 0;
+  }
+  if (!assumeLocal && isFullUrl(href)) {
+    document.location = href;
+  } else {
+    if (isFullUrl(href)) {
+      href = url.parse(href).path;
+    }
+
+    var results = this._router.recognize(href);
+    if (results && results.length) {
+      var route = results[0].handler(href, results[0].params);
+      this.currentRoute = route;
+      if (!skipHistory) history.pushState(href, '', href);
+      return this.getState();
+    }
+  }
+
+  return this.getState();
 }
+
+RouteStore.prototype.modifyQueryParams = function(newParams) {
+  var uri = url.parse(document.location.toString());
+  uri.query = uri.query || {};
+  if (typeof uri.query == 'string') uri.query = querystring.parse(uri.query);
+  for (key in newParams) {
+    uri.query[key] = newParams[key]
+  }
+  if (uri.search) delete uri['search'];
+  var newUrl = url.format(uri);
+  return this.setUrl(newUrl, false, true);
+};
 
 module.exports = RouteStore;

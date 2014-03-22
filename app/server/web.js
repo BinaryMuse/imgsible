@@ -29,8 +29,8 @@ module.exports = function(app, db) {
   app.get('/', function(req, res) {
     var dispatcher = createDispatcher();
 
-    var promise = dispatcher.dispatch(RouteActions.setUrlFromRequest(req.url)).then(function() {
-      return dispatcher.dispatch(ImageActions.loadIndex(null, 'date', 'desc'));
+    var promise = dispatcher.dispatch(RouteActions.setUrlFromRequest(req.url)).then(function(state) {
+      return dispatcher.dispatch(ImageActions.loadIndex(null, 'date', state.route.params.sortdir));
     });
 
     promise.then(function(state) {

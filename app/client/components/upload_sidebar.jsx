@@ -9,16 +9,22 @@ var UploadSidebar = React.createClass({
   render: function() {
     var data = this.props.upload;
 
+    var form = (
+      <div>
+        <h1>Upload an Image</h1>
+        <form id='upload-image' encType="multipart/form-data" onSubmit={this.handleSubmit}>
+          <div><input name='title' type='text' placeholder='Title' /></div>
+          <div><textarea name='description' placeholder='Description'></textarea></div>
+          <div><input name='upload' type='file' /></div>
+          <div><input type='submit' value='Upload' /></div>
+        </form>
+      </div>
+    );
+
     if (data.view === 'form')
       return (
         <div id='upload-sidebar'>
-          <h1>Upload an Image</h1>
-          <form id='upload-image' encType="multipart/form-data" onSubmit={this.handleSubmit}>
-            <div><input name='title' type='text' placeholder='Title' /></div>
-            <div><textarea name='description' placeholder='Description'></textarea></div>
-            <div><input name='upload' type='file' /></div>
-            <div><input type='submit' value='Upload' /></div>
-          </form>
+          {form}
         </div>
       );
     else if (data.view === 'progress')
@@ -31,9 +37,9 @@ var UploadSidebar = React.createClass({
       return (
         <div id='upload-sidebar'>
           <h1>Success</h1>
-          Your image was uploaded successfully!
-          {' '}<a href={'/image/' + data.image.id}>View your image</a> or
-          {' '}<a href='#' onClick={this.handleUploadAgain}>upload another</a>
+          <p>Your image was uploaded successfully!
+          {' '}<a href={'/image/' + data.image.id}>View your image</a>.</p>
+          {form}
         </div>
       );
     else if (data.view === 'error')

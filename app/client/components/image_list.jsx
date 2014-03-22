@@ -1,7 +1,9 @@
 /** @jsx React.DOM */
 
-var ImageActions = require('../actions/image_actions.js');
+var cx = React.addons.classSet;
 var DispatcherMixin = require('../mixins/dispatcher_mixin.js');
+var ImageActions = require('../actions/image_actions.js');
+var RouteActions = require('../actions/route_actions.js');
 
 function throttle(fn, threshhold) {
   threshhold || (threshhold = 250);
@@ -45,13 +47,28 @@ var ImageList = React.createClass({
       )
     });
 
+    var doneBanner = null;
+    if (this.props.imageList.done)
+      doneBanner = <div id='no-more-images'>No More Images</div>;
+
+    var ascClasses = cx({
+      active: this.props.sortDir === 'asc'
+    });
+
+    var descClasses = cx({
+      active: this.props.sortDir === 'desc'
+    });
+
     return (
       <div id='image-list'>
         <div className='selector'>
-          Showing the most [ <a href='#' className='active'>recent</a> / <a href='#'>voted</a> ] images
+          Showing the most recent images
+          in [ <a href='#' onClick={this.changeOrder.bind(null, 'asc')} className={ascClasses}>ascending</a> /{' '}
+          <a href='#' onClick={this.changeOrder.bind(null, 'desc')} className={descClasses}>descending</a> ] order
         </div>
 
         {imageEls}
+        {doneBanner}
       </div>
     );
   },
@@ -59,7 +76,7 @@ var ImageList = React.createClass({
   componentDidMount: function() {
     if (this.props.imageList.ids.length === 0) {
       this.setState({loading: true});
-      this.dispatcher.dispatch(ImageActions.loadIndex(null, 'date', 'desc'));
+      this.dispatcher.dispatch(ImageActions.loadIndex(null, 'date', this.props.sortDir));
     } else {
       this.checkScrollPosition();
     }
@@ -73,13 +90,21 @@ var ImageList = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if ((this.state.loading && nextProps.imageList.length !== this.props.imageList.length) || !this.state.checkedForMore) {
+    if (this.props.sortDir !== nextProps.sortDir) {
+      this.dispatcher.dispatch(ImageActions.loadIndex(null, 'date', nextProps.sortDir, true));
+    } else if ((this.state.loading && nextProps.imageList.length !== this.props.imageList.length) || !this.state.checkedForMore) {
       this.setState({loading: false});
     }
   },
 
   componentDidUpdate: function() {
     this.checkScrollPosition();
+  },
+
+  changeOrder: function(order, event) {
+    event.preventDefault();
+    if (order === this.props.sortDir) return;
+    this.dispatcher.dispatch(RouteActions.modifyQuery({sortdir: order}));
   },
 
   checkScrollPosition: function() {
@@ -100,7 +125,7 @@ var ImageList = React.createClass({
   fetchNextPage: function() {
     this.setState({loading: true});
     var lastImage = this.props.imageList.ids[this.props.imageList.ids.length - 1];
-    this.dispatcher.dispatch(ImageActions.loadIndex(lastImage, 'date', 'desc'));
+    this.dispatcher.dispatch(ImageActions.loadIndex(lastImage, 'date', this.props.sortDir));
   }
 });
 

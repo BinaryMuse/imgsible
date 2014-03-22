@@ -7,5 +7,9 @@ module.exports = {
 
   setUrlFromRequest: function(url) {
     return {type: this.setUrlFromRequest, data: {url: url}};
+  },
+
+  modifyQuery: function(obj) {
+    return {type: this.modifyQuery, data: {query: obj}};
   }
 };

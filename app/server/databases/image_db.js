@@ -42,7 +42,7 @@ module.exports = function(db) {
 
       return startPromise.then(function(startIndex) {
         startIndex = startIndex + 1;
-        return Q.nfcall(db[methods.range].bind(db), 'imgs:' + key, startIndex, startIndex + 2);
+        return Q.nfcall(db[methods.range].bind(db), 'imgs:' + key, startIndex, startIndex + 8);
       });
     }
   }

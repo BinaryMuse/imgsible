@@ -1,7 +1,8 @@
 /** @jsx React.DOM **/
 
-var ImageActions = require('../actions/image_actions.js');
+var cx = React.addons.classSet;
 var DispatcherMixin = require('../mixins/dispatcher_mixin.js');
+var ImageActions = require('../actions/image_actions.js');
 
 var ImageView = React.createClass({
   mixins: [DispatcherMixin],
@@ -14,7 +15,6 @@ var ImageView = React.createClass({
     var content;
     if (this.props.image) {
       var image = this.props.image;
-      var cx = React.addons.classSet;
 
       var backgroundClasses = cx({
         'main-image': true,

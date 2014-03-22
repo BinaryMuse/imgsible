@@ -34,7 +34,8 @@ var ApplicationView = React.createClass({
   render: function() {
     var centerSection = null;
     if (this.state.route.page === 'list') {
-      centerSection = <ImageList imageList={this.state.imageList} />;
+      centerSection = <ImageList imageList={this.state.imageList}
+                                 sortDir={this.state.route.params.sortdir} />;
     } else if (this.state.route.page === 'image') {
       var image = this.state.imagesById[this.state.route.image];
       if (image === ImageStore.NOT_FOUND)

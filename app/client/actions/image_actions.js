@@ -5,8 +5,8 @@ module.exports = {
     return {type: this.loadImage, data: {id: id}};
   },
 
-  loadIndex: function(since, by, order) {
-    return {type: this.loadIndex, data: {since: since, by: by, order: order}};
+  loadIndex: function(since, by, order, resetList) {
+    return {type: this.loadIndex, data: {since: since, by: by, order: order, resetList: resetList}};
   },
 
   uploadImage: function(form) {

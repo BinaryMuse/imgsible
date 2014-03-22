@@ -21,7 +21,7 @@ ImageStore.prototype.handleDispatch = function(type, action) {
   if (type === ImageActions.loadImage) {
     return this.fetchImageData(action.id);
   } else if (type === ImageActions.loadIndex) {
-    return this.fetchImageList(action.since, action.by, action.order);
+    return this.fetchImageList(action.since, action.by, action.order, action.resetList);
   } else if (type === ImageActions.uploadImage) {
     return this.uploadImage(action.form);
   } else if (type === ImageActions.resetUploadForm) {
@@ -42,11 +42,13 @@ ImageStore.prototype.fetchImageData = function(id) {
   }.bind(this));
 };
 
-ImageStore.prototype.fetchImageList = function(since, by, order) {
+ImageStore.prototype.fetchImageList = function(since, by, order, resetList) {
   return this.imageDb.list(since, by, order).then(function(ids) {
+    if (resetList) this.imageList.done = false;
+
     if (ids.length === 0)
       this.imageList.done = true;
-    else if (this.imageList.ids.length)
+    else if (this.imageList.ids.length && !resetList)
       this.imageList.ids = this.imageList.ids.concat(ids);
     else
       this.imageList.ids = ids;
