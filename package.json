@@ -24,7 +24,7 @@
     "ejs": "^0.8.5",
     "node-jsx": "^0.9.0",
     "envify": "^1.2.1",
-    "react": "^0.9.0",
+    "react": "^0.10.0",
     "object-merge": "^2.5.1",
     "route-recognizer": "^0.1.0"
   },
