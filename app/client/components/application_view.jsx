@@ -47,7 +47,7 @@ var ApplicationView = React.createClass({
     return (
       <div>
         <div id='header-container'>
-          <Header />
+          <Header currentRoute={this.state.route} />
         </div>
 
         <div id='content'>
