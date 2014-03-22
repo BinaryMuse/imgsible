@@ -3,6 +3,10 @@ Imgsible
 
 Imgsible is an image upload and sharing site in the spirit of the excellent image sharing site [Imgur](http://imgur.com) built to demonstrate building a non-trivial isomorphic application with [React](http://facebook.github.io/react/).
 
+[![Screenshot](docs/screenshot.png)](https://www.youtube.com/watch?v=4x64YO5XuSs&hd=1)
+
+Check out [the demo on YouTube](https://www.youtube.com/watch?v=4x64YO5XuSs&hd=1).
+
 Running
 -------
 
@@ -74,8 +78,8 @@ Additionally, the merged state is provided to the client via a property on `wind
 ### Pros
 
 * Components don't have to know about the Stores at all--they are coupled only by the state that the Stores generate.
-* Data flow is still top-down and one-directional from the components perspective. A request for change goes out to the Dispatcher and the new state flows in to the top-level component to flow down to children.
-* Stores can easily be passed parameters to change their behavior on the client and server. For example, the `ImageStore` takes an `ImageDb` as a parameter. The server version uses Redis, while the client version makes XHR requests. They otherwise have the same API and use promises, so the Store need not know the difference.
+* Data flow is still top-down and one-directional from the components perspective. A request for change goes out to the Dispatcher and the new state flows in to the top-level component to flow down to children. Components do not reference stores at all.
+* Stores can easily be passed parameters to change their behavior on the client and server. For example, the `ImageStore` takes an `ImageDb` as a parameter. The server version uses Redis, while the client version makes XHR requests. They otherwise have the same API and use promises, so the Store need not know the difference. Adding new features that work on both the client and the server is surprisingly painless.
 
 ### Cons
 
@@ -84,6 +88,7 @@ Additionally, the merged state is provided to the client via a property on `wind
 * The Dispatcher can potentially get a bit confused if multiple Actions are dispatched very close together and one of the Stores is slow to resolve its promise. The race condition caused by the ordering of the promises being resolved can end up setting state that is not accurate. In practice (so far) this isn't a huge issue because most Actions only affect one store and long-running asynchronous actions tend to be relatively far apart.
 * It's difficult for Stores to *push* data to the UI when their state changes asynchronously--for example, an Action that starts a file upload returns a single promise, but it may be useful to provide multiple UI updates as the upload progresses. Currently, the Dispatcher has a method called `refreshState` that calls `getState` on each Store and merges them together, but this is not a great long-term solution.
 * I'm not a huge fan of the way Actions are currently generated. In particular, converting the arguments into an object and then passing that object to the Stores' `handleDispatch` methods is error prone; passing them as arguments all the way down the chain (using `handleDispatch.apply`) would likely be better.
+* On the server, we must dispatch the right Actions to get the stores in a proper state. Ideally, we could provide a mechanism to preload the stores on the server without dispatching any Actions. This would probably require decoupling the Stores and the state (as mentioned above).
 
 But what about...
 -----------------
