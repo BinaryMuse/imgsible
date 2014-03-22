@@ -30,11 +30,12 @@ app.set('root', __dirname);
 app.set('uploadDir', __dirname + '/images-upload');
 app.set('view engine', 'ejs');
 
-app.use(express.logger());
+if (app.get('env') === 'production') app.use(express.logger());
 app.use(express.compress());
 app.use(express.static(app.get('root') + '/public'));
+if (app.get('env') === 'development') app.use(express.logger('dev'));
 app.use(app.router);
-if (app.get('env') === 'production') app.use(express.errorHandler());
+if (app.get('env') === 'development') app.use(express.errorHandler());
 
 [api, web].forEach(function(extension) {
   extension(app, db);
