@@ -61,7 +61,13 @@ module.exports = function(app, db) {
       } else {
         var fname = req.params[1] ? req.params[0] + '_thumb.jpg' : req.params[0];
         res.header('Content-Type', mimeTypes[reply.type]);
-        fs.createReadStream(app.get('uploadDir') + '/' + fname).pipe(res);
+        res.header('ETag', req.params[1] ? req.params[0] + '-t' : req.params[0]);
+
+        if (req.fresh) {
+          res.send(304);
+        } else {
+          fs.createReadStream(app.get('uploadDir') + '/' + fname).pipe(res);
+        }
       }
     }, function(reason) {
       console.error('Error in web/i');
