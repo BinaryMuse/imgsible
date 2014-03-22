@@ -39,7 +39,7 @@ RouteStore.prototype.getState = function() {
 
 RouteStore.prototype.handleDispatch = function(type, action) {
   if (type === RouteActions.changeUrl) {
-    return this.setUrl(action.url);
+    return this.setUrl(action.url, action.skipHistory);
   } else if (type === RouteActions.setUrlFromRequest) {
     var results = this._router.recognize(action.url);
     if (results && results.length) {
@@ -86,7 +86,7 @@ RouteStore.prototype.modifyQueryParams = function(newParams) {
   }
   if (uri.search) delete uri['search'];
   var newUrl = url.format(uri);
-  return this.setUrl(newUrl, false, true);
+  return this.setUrl(newUrl, true, true);
 };
 
 module.exports = RouteStore;

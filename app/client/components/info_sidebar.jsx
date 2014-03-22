@@ -9,7 +9,7 @@ var InfoSidebar = React.createClass({
           site <a href='http://imgur.com/'>Imgur</a> to demonstrate a
           non-trivial <a href='http://facebook.github.io/react/'>React</a> application. It is
           not intended for general use; you should head over to Imgur for that!</p>
-        <p>Check out the source for the app <a href='#'>on GitHub</a>!</p>
+        <p>Check out the source for the app <a href='https://github.com/BinaryMuse/imgsible'>on GitHub</a>!</p>
       </div>
     );
   }
