@@ -6,19 +6,22 @@ var ImageActions = require('../actions/image_actions.js');
 
 var NOT_FOUND = 'IMAGE_NOT_FOUND';
 
-function ImageStore(imageDb) {
+function ImageStore(imageDb, initialList) {
+  this.imageList = initialList || {ids: [], done: false};
   this.imagesById = {};
   this.upload = { view: 'form' };
   this.imageDb = imageDb;
 }
 
 ImageStore.prototype.getState = function() {
-  return { imagesById: this.imagesById, upload: this.upload };
+  return { imagesById: this.imagesById, upload: this.upload, imageList: this.imageList };
 };
 
 ImageStore.prototype.handleDispatch = function(type, action) {
   if (type === ImageActions.loadImage) {
     return this.fetchImageData(action.id);
+  } else if (type === ImageActions.loadIndex) {
+    return this.fetchImageList(action.since, action.by, action.order);
   } else if (type === ImageActions.uploadImage) {
     return this.uploadImage(action.form);
   } else if (type === ImageActions.resetUploadForm) {
@@ -35,6 +38,19 @@ ImageStore.prototype.fetchImageData = function(id) {
     return this.getState();
   }.bind(this), function() {
     this.imagesById[id] = NOT_FOUND;
+    return this.getState();
+  }.bind(this));
+};
+
+ImageStore.prototype.fetchImageList = function(since, by, order) {
+  return this.imageDb.list(since, by, order).then(function(ids) {
+    if (ids.length === 0)
+      this.imageList.done = true;
+    else if (this.imageList.ids.length)
+      this.imageList.ids = this.imageList.ids.concat(ids);
+    else
+      this.imageList.ids = ids;
+
     return this.getState();
   }.bind(this));
 };
@@ -59,6 +75,7 @@ ImageStore.prototype.uploadImage = function(form) {
     if (this.status === 201) {
       data = JSON.parse(this.responseText);
       store.upload = { view: 'success', image: data };
+      store.imageList.ids.unshift(data.id);
       store._dispatcher.refreshState();
     } else {
       console.error(this);

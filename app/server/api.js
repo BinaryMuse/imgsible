@@ -5,7 +5,8 @@ var formidable = require('formidable');
 var gm = require('gm');
 var Q = require('q');
 
-var errors = require('./errors');
+var errors = require('./errors.js');
+var ImageDb = require('./databases/image_db.js');
 
 var FILE_TYPE_MAP = {
   'image/jpeg': 'jpg',
@@ -17,8 +18,9 @@ var FILE_TYPE_MAP = {
 function createThumbnail(imagePath) {
   var d = Q.defer();
   gm(imagePath)
+    .adjoin()
     .gravity('Center')
-    .thumb(200, 200, imagePath + "_thumb", 90, d.makeNodeResolver());
+    .thumb(200, 200, imagePath + "_thumb.jpg", 90, d.makeNodeResolver());
   return d.promise;
 }
 
@@ -81,6 +83,8 @@ function createImage(db, file, uploadDir, title, description) {
 }
 
 module.exports = function(app, db) {
+  var imageDb = ImageDb(db);
+
   app.all('/api*', function(req, res, next) {
     if (app.get('dbConnected')) {
       next();
@@ -119,6 +123,13 @@ module.exports = function(app, db) {
       console.error('Error in api/image');
       console.error(reason);
       errors.genericError(res);
+    });
+  });
+
+  app.get('/api/list', function(req, res) {
+    imageDb.list(req.query.since, req.query.by || 'date', req.query.order || 'desc')
+    .then(function(ids){
+      res.json({ids: ids});
     });
   });
 

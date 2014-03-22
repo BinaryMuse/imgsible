@@ -29,7 +29,10 @@ module.exports = function(app, db) {
   app.get('/', function(req, res) {
     var dispatcher = createDispatcher();
 
-    var promise = dispatcher.dispatch(RouteActions.setUrlFromRequest(req.url));
+    var promise = dispatcher.dispatch(RouteActions.setUrlFromRequest(req.url)).then(function() {
+      return dispatcher.dispatch(ImageActions.loadIndex(null, 'date', 'desc'));
+    });
+
     promise.then(function(state) {
       var html =  React.renderComponentToString(ApplicationView({preloadData: state, dispatcher: dispatcher}));
       res.render('index', {app: html, preloadData: state});
@@ -56,7 +59,7 @@ module.exports = function(app, db) {
       if (!reply) {
         errors.notFound(res);
       } else {
-        var fname = req.params[1] ? req.params[0] + '_thumb' : req.params[0];
+        var fname = req.params[1] ? req.params[0] + '_thumb.jpg' : req.params[0];
         res.header('Content-Type', mimeTypes[reply.type]);
         fs.createReadStream(app.get('uploadDir') + '/' + fname).pipe(res);
       }

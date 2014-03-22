@@ -5,6 +5,10 @@ module.exports = {
     return {type: this.loadImage, data: {id: id}};
   },
 
+  loadIndex: function(since, by, order) {
+    return {type: this.loadIndex, data: {since: since, by: by, order: order}};
+  },
+
   uploadImage: function(form) {
     return {type: this.uploadImage, data: {form: form}};
   },

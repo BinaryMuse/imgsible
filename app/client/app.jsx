@@ -8,7 +8,7 @@ var RouteStore = require('./stores/route_store.js');
 
 var preloadData = window.preloadData;
 var dispatcher = new AppDispatcher();
-dispatcher.register(new ImageStore(ImageDb()));
+dispatcher.register(new ImageStore(ImageDb(), preloadData.imageList));
 dispatcher.register(new RouteStore(preloadData.route));
 
 React.renderComponent(<ApplicationView preloadData={preloadData} dispatcher={dispatcher} />, document.getElementById('app'));

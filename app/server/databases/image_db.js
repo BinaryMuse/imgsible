@@ -16,6 +16,34 @@ module.exports = function(db) {
       });
 
       return deferred.promise;
+    },
+
+    list: function(since, by, order) {
+      by = (by || 'date');
+      key = by === 'votes' ? 'votes' : 'dates';
+
+      var methods = {
+        rank: 'zrevrank',
+        range: 'zrevrange'
+      };
+      if (order === 'asc') {
+        methods = {
+          rank: 'zrank',
+          range: 'zrange'
+        };
+      }
+
+      var startPromise;
+      if (since) {
+        startPromise = Q.nfcall(db[methods.rank].bind(db), 'imgs:' + key, since);
+      } else {
+        startPromise = Q.when(-1)
+      }
+
+      return startPromise.then(function(startIndex) {
+        startIndex = startIndex + 1;
+        return Q.nfcall(db[methods.range].bind(db), 'imgs:' + key, startIndex, startIndex + 2);
+      });
     }
   }
 };
