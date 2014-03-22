@@ -63,8 +63,8 @@ var ImageList = React.createClass({
       <div id='image-list'>
         <div className='selector'>
           Showing the most recent images
-          in [ <a href='#' onClick={this.changeOrder.bind(null, 'asc')} className={ascClasses}>ascending</a> /{' '}
-          <a href='#' onClick={this.changeOrder.bind(null, 'desc')} className={descClasses}>descending</a> ] order
+          in [ <a href='?sortdir=asc' onClick={this.changeOrder.bind(null, 'asc')} className={ascClasses}>ascending</a> /{' '}
+          <a href='?sortdir=desc' onClick={this.changeOrder.bind(null, 'desc')} className={descClasses}>descending</a> ] order
         </div>
 
         {imageEls}
