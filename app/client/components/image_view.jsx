@@ -40,7 +40,7 @@ var ImageView = React.createClass({
           <div className='main-image-container'>
             <a href={'/i/' + image.id + '.' + image.extension} target='_blank'>
               <img className={backgroundClasses} src={'/i/' + image.id + '.' + image.extension}
-                onClick={this.toggleZoom} />
+                onClick={this.zoomIn} />
             </a>
             {zoomedImage}
           </div>
@@ -69,11 +69,12 @@ var ImageView = React.createClass({
     }
   },
 
-  toggleZoom: function(e) {
+  zoomIn: function(e) {
     e.preventDefault();
-    var zoomed = this.state.zoomed;
+    if (this.state.zoomed) return false;
 
-    var unzoom = function() {
+    var unzoom = function(e) {
+      e.preventDefault();
       this.setState({zoomed: false});
       document.removeEventListener('click', unzoom);
     }.bind(this);
