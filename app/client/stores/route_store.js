@@ -15,9 +15,9 @@ function RouteStore(initialRoute) {
     path: '/',
     handler: function(fullUrl) {
       var uri = url.parse(fullUrl);
-      if (typeof uri.query === 'undefined') uri.query = {};
+      if (!uri.query) uri.query = {};
       if (typeof uri.query === 'string') uri.query = querystring.parse(uri.query);
-      params = {
+      var params = {
         sortdir: uri.query.sortdir || 'desc',
         start: uri.query.start || null
       };
