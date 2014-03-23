@@ -4,6 +4,7 @@ var cx = React.addons.classSet;
 var DispatcherMixin = require('../mixins/dispatcher_mixin.js');
 var ImageActions = require('../actions/image_actions.js');
 var RouteActions = require('../actions/route_actions.js');
+var urlmod = require('../../lib/urlmod.js');
 
 function throttle(fn, threshhold) {
   threshhold || (threshhold = 250);
@@ -104,7 +105,8 @@ var ImageList = React.createClass({
   changeOrder: function(order, event) {
     event.preventDefault();
     if (order === this.props.sortDir) return;
-    this.dispatcher.dispatch(RouteActions.modifyQuery({sortdir: order}));
+    var newUrl = urlmod.getNewPath(document.location.toString(), null, {sortdir: order});
+    this.dispatcher.dispatch(RouteActions.changeUrl(newUrl, false, true));
   },
 
   checkScrollPosition: function() {
