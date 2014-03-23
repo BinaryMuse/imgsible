@@ -90,6 +90,8 @@ Additionally, the merged state is provided to the client via a property on `wind
 * I'm not a huge fan of the way Actions are currently generated. In particular, converting the arguments into an object and then passing that object to the Stores' `handleDispatch` methods is error prone; passing them as arguments all the way down the chain (using `handleDispatch.apply`) would likely be better.
 * On the server, we must dispatch the right Actions to get the stores in a proper state. Ideally, we could provide a mechanism to preload the stores on the server without dispatching any Actions. This would probably require decoupling the Stores and the state (as mentioned above).
 
+See [this pull request](https://github.com/BinaryMuse/imgsible/pull/1) for progress on an architecture overhaul that should help alleviate these issues.
+
 But what about...
 -----------------
 
