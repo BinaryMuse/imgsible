@@ -55,13 +55,15 @@ module.exports = function(app, db) {
   });
 
   app.get(/^\/i\/(\w+)(-t)?.(jpg|jpeg|gif|png)/, function(req, res) {
-    Q.nfcall(db.hgetall.bind(db), 'img:' + req.params[0]).then(function(reply) {
+    var id = req.params[0];
+    var thumb = req.params[1];
+    Q.nfcall(db.hgetall.bind(db), 'img:' + id).then(function(reply) {
       if (!reply) {
         errors.notFound(res);
       } else {
-        var fname = req.params[1] ? req.params[0] + '_thumb.jpg' : req.params[0];
+        var fname = thumb ? id + '_thumb.jpg' : id;
         res.header('Content-Type', mimeTypes[reply.type]);
-        res.header('ETag', req.params[1] ? req.params[0] + '-t' : req.params[0]);
+        res.header('ETag', thumb ? id + '-t' : id);
 
         if (req.fresh) {
           res.send(304);
