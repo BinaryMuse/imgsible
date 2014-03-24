@@ -12,7 +12,8 @@
   },
   "scripts": {
     "start": "nf start",
-    "test": "mocha test/**/*_test.js",
+    "jshint": "find app test -name \"*.js*\" | xargs ./node_modules/.bin/jsxhint",
+    "test": "mocha test/**/*_test.js && npm run jshint",
     "test-watch": "mocha -w test/**/*_test.js"
   },
   "dependencies": {
@@ -35,7 +36,8 @@
     "sinon-chai": "^2.5.0",
     "sinon": "^1.9.0",
     "chai": "^1.9.1",
-    "mocha": "^1.18.2"
+    "mocha": "^1.18.2",
+    "jsxhint": "^0.4.4"
   },
   "private": true
 }

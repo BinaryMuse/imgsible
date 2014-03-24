@@ -69,6 +69,6 @@ RouteStore.prototype.setUrl = function(href, pushState, replaceState) {
   }
 
   return this.getState();
-}
+};
 
 module.exports = RouteStore;

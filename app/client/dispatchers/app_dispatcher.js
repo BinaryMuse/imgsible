@@ -21,7 +21,7 @@ AppDispatcher.prototype.dispatch = function(action) {
   var data = action.data;
 
   var promises = [];
-  for (i in this.stores) {
+  for (var i in this.stores) {
     var promise = this.stores[i].handleDispatch(type, data);
     promises.push(promise);
   }
@@ -39,7 +39,7 @@ AppDispatcher.prototype.dispatch = function(action) {
 
 AppDispatcher.prototype.refreshState = function() {
   var states = [];
-  for (i in this.stores) {
+  for (var i in this.stores) {
     states.push(this.stores[i].getState());
   }
 

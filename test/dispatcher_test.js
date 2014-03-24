@@ -15,12 +15,12 @@ var ImageActions = {
 
 var Store = function() {
   BaseStore.call(this);
-}
+};
 
 util.inherits(Store, BaseStore);
 
 Store.prototype.onDispatcherRegistration = function(dispatcher) {
-  dispatcher.on('LOAD_IMAGE', this.loadImage.bind(this))
+  dispatcher.on('LOAD_IMAGE', this.loadImage.bind(this));
 };
 
 Store.prototype.loadImage = function(id, useCache) {

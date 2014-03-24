@@ -11,7 +11,7 @@ util.inherits(Dispatcher, events.EventEmitter);
 
 Dispatcher.prototype.registerStores = function(spec) {
   var store;
-  for (key in spec) {
+  for (var key in spec) {
     store = spec[key];
     store._on = store.on;
     store.on = null;
@@ -27,11 +27,11 @@ Dispatcher.prototype.store = function(name) {
 Dispatcher.prototype.registerActions = function(spec) {
   var dispatcher = this;
   var actionSet, eventName, fn;
-  for (key in spec) {
+  for (var key in spec) {
     if (!this.actions[key]) this.actions[key] = {};
     actionSet = spec[key];
 
-    for (name in actionSet) {
+    for (var name in actionSet) {
       this.actions[key][name] = actionSet[name].bind(this);
     }
   }
@@ -47,7 +47,7 @@ Dispatcher.prototype.dispatch = function(event) {
 
 Dispatcher.prototype.destroy = function() {
   this.removeAllListeners();
-  for (key in this.stores) {
+  for (var key in this.stores) {
     this.stores[key].removeAllListeners();
   }
   this.stores = null;

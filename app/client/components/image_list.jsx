@@ -7,13 +7,13 @@ var RouteActions = require('../actions/route_actions.js');
 var urlmod = require('../../lib/urlmod.js');
 
 function throttle(fn, threshhold) {
-  threshhold || (threshhold = 250);
+  threshhold = (threshhold || 250);
   var last,
       deferTimer;
   return function () {
     var context = this;
 
-    var now = +new Date,
+    var now = +new Date(),
         args = arguments;
     if (last && now < last + threshhold) {
       clearTimeout(deferTimer);
@@ -45,7 +45,7 @@ var ImageList = React.createClass({
             <img src={'http://localhost:5000/i/' + img + '-t.gif'} />
           </a>
         </div>
-      )
+      );
     });
 
     var doneBanner = null;
@@ -116,7 +116,7 @@ var ImageList = React.createClass({
 
     var node = this.getDOMNode();
     var listHeight = node.clientHeight;
-    var listTop = node.offsetTop
+    var listTop = node.offsetTop;
     var listBottom = listHeight + listTop;
     var bottomPixel = document.documentElement.clientHeight + document.body.scrollTop;
     var diff = listBottom - bottomPixel;

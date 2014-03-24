@@ -42,4 +42,4 @@ var RoutingMixin = {
   }
 };
 
-module.exports = RoutingMixin
+module.exports = RoutingMixin;

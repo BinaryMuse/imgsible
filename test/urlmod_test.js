@@ -2,7 +2,7 @@ var assert = require('chai').assert;
 
 var mod = require('../app/lib/urlmod.js');
 
-var basePath = 'http://imgsible.com/some/path'
+var basePath = 'http://imgsible.com/some/path';
 var basePathWithQuery = basePath + '?abc=123';
 
 describe ('URL mod', function() {
@@ -49,7 +49,7 @@ describe ('URL mod', function() {
         var newPath = mod.getNewPath(basePathWithQuery, '/another/path?def=234');
         assert.equal(newPath, '/another/path?def=234');
 
-        var newPath = mod.getNewPath(basePathWithQuery, '/another/path');
+        newPath = mod.getNewPath(basePathWithQuery, '/another/path');
         assert.equal(newPath, '/another/path');
       });
     });

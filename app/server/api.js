@@ -90,7 +90,7 @@ module.exports = function(app, db) {
       next();
     } else {
       errors.genericError(res);
-    };
+    }
   });
 
   app.get('/api/', function(req, res) {

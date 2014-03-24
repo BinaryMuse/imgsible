@@ -26,7 +26,7 @@ module.exports = {
     if (mod) oldUri.query = newUri.query;
     if (mod) oldUri.pathname = newUri.pathname;
 
-    for (key in params) {
+    for (var key in params) {
       oldUri.query[key] = params[key];
     }
 

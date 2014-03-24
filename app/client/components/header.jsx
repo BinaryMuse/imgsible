@@ -2,7 +2,7 @@
 
 var Header = React.createClass({
   getInitialState: function() {
-    return { homepageLink: '/' }
+    return { homepageLink: '/' };
   },
 
   render: function() {
@@ -16,7 +16,7 @@ var Header = React.createClass({
   componentWillReceiveProps: function(nextProps) {
     if (nextProps.currentRoute.page === 'list') {
       if (nextProps.currentRoute.params.sortdir === 'asc')
-        this.setState({homepageLink: '/?sortdir=asc'})
+        this.setState({homepageLink: '/?sortdir=asc'});
       else
         this.setState({homepageLink: '/'});
     }
