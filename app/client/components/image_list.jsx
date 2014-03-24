@@ -4,15 +4,16 @@ var cx = React.addons.classSet;
 var DispatcherMixin = require('../mixins/dispatcher_mixin.js');
 var ImageActions = require('../actions/image_actions.js');
 var RouteActions = require('../actions/route_actions.js');
+var urlmod = require('../../lib/urlmod.js');
 
 function throttle(fn, threshhold) {
-  threshhold || (threshhold = 250);
+  threshhold = (threshhold || 250);
   var last,
       deferTimer;
   return function () {
     var context = this;
 
-    var now = +new Date,
+    var now = +new Date(),
         args = arguments;
     if (last && now < last + threshhold) {
       clearTimeout(deferTimer);
@@ -44,7 +45,7 @@ var ImageList = React.createClass({
             <img src={'http://localhost:5000/i/' + img + '-t.gif'} />
           </a>
         </div>
-      )
+      );
     });
 
     var doneBanner = null;
@@ -104,7 +105,8 @@ var ImageList = React.createClass({
   changeOrder: function(order, event) {
     event.preventDefault();
     if (order === this.props.sortDir) return;
-    this.dispatcher.dispatch(RouteActions.modifyQuery({sortdir: order}));
+    var newUrl = urlmod.getNewPath(document.location.toString(), null, {sortdir: order});
+    this.dispatcher.dispatch(RouteActions.changeUrl(newUrl, false, true));
   },
 
   checkScrollPosition: function() {
@@ -114,7 +116,7 @@ var ImageList = React.createClass({
 
     var node = this.getDOMNode();
     var listHeight = node.clientHeight;
-    var listTop = node.offsetTop
+    var listTop = node.offsetTop;
     var listBottom = listHeight + listTop;
     var bottomPixel = document.documentElement.clientHeight + document.body.scrollTop;
     var diff = listBottom - bottomPixel;

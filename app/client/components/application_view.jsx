@@ -45,7 +45,7 @@ var ApplicationView = React.createClass({
     }
 
     return (
-      <div>
+      <div onClick={this._handleRouteClick}>
         <div id='header-container'>
           <Header currentRoute={this.state.route} />
         </div>
@@ -62,7 +62,7 @@ var ApplicationView = React.createClass({
   },
 
   handleRouteChange: function(newUrl, fromHistory) {
-    this.dispatcher.dispatch(RouteActions.changeUrl(newUrl, fromHistory));
+    this.dispatcher.dispatch(RouteActions.changeUrl(newUrl, !fromHistory));
   }
 });
 

@@ -11,7 +11,10 @@
     "url": "https://github.com/BinaryMuse/imgsible.git"
   },
   "scripts": {
-    "start": "nf start"
+    "start": "nf start",
+    "jshint": "find app test -name \"*.js*\" | xargs ./node_modules/.bin/jsxhint",
+    "test": "mocha test/**/*_test.js && npm run jshint",
+    "test-watch": "mocha -w test/**/*_test.js"
   },
   "dependencies": {
     "express": "^3.4.8",
@@ -20,10 +23,8 @@
     "hiredis": "^0.1.16",
     "gm": "^1.14.2",
     "q": "^1.0.1",
-    "director": "^1.2.3",
     "ejs": "^0.8.5",
     "node-jsx": "^0.9.0",
-    "envify": "^1.2.1",
     "react": "^0.10.0",
     "object-merge": "^2.5.1",
     "route-recognizer": "^0.1.0"
@@ -31,7 +32,12 @@
   "devDependencies": {
     "foreman": "0.0.26",
     "reactify": "^0.10.0",
-    "watchify": "^0.6.2"
+    "watchify": "^0.6.2",
+    "sinon-chai": "^2.5.0",
+    "sinon": "^1.9.0",
+    "chai": "^1.9.1",
+    "mocha": "^1.18.2",
+    "jsxhint": "^0.4.4"
   },
   "private": true
 }

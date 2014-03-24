@@ -9,7 +9,7 @@ module.exports = function(db) {
         if (err || !reply) {
           deferred.reject();
         } else {
-          reply.extension = reply.type
+          reply.extension = reply.type;
           reply.id = id;
           deferred.resolve(reply);
         }
@@ -37,7 +37,7 @@ module.exports = function(db) {
       if (since) {
         startPromise = Q.nfcall(db[methods.rank].bind(db), 'imgs:' + key, since);
       } else {
-        startPromise = Q.when(-1)
+        startPromise = Q.when(-1);
       }
 
       return startPromise.then(function(startIndex) {
@@ -45,5 +45,5 @@ module.exports = function(db) {
         return Q.nfcall(db[methods.range].bind(db), 'imgs:' + key, startIndex, startIndex + 8);
       });
     }
-  }
+  };
 };
